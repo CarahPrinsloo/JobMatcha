@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:client_app/data/explore_json.dart';
 import 'package:client_app/data/icons.dart';
 import 'package:client_app/theme/colors.dart';
@@ -12,10 +10,11 @@ class ExplorePage extends StatefulWidget {
   const ExplorePage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ExplorePageState();
+  _ExplorePageState createState() => _ExplorePageState();
 }
 
-class _ExplorePageState extends State<ExplorePage> {
+class _ExplorePageState extends State<ExplorePage>
+    with TickerProviderStateMixin {
   List itemsTemp = [];
   int itemLength = 0;
 
@@ -33,15 +32,235 @@ class _ExplorePageState extends State<ExplorePage> {
     return Scaffold(
       backgroundColor: white,
       body: getBody(),
-      bottomSheet: getFooter(),
+      bottomSheet: getBottomSheet(),
     );
   }
 
-  Widget getFooter() {
-    var size = MediaQuery
-        .of(context)
-        .size;
+  Widget getBody() {
+    var size = MediaQuery.of(context).size;
 
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 120),
+      child: Container(
+        height: size.height,
+        child: tinderSwipeCard(size),
+      ),
+    );
+  }
+
+  TinderSwapCard tinderSwipeCard(Size size) {
+    return TinderSwapCard(
+      totalNum: itemLength,
+      maxWidth: MediaQuery.of(context).size.width,
+      maxHeight: MediaQuery.of(context).size.height * 0.75,
+      minWidth: MediaQuery.of(context).size.width * 0.75,
+      minHeight: MediaQuery.of(context).size.height * 0.6,
+      cardBuilder: (context, index) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: grey.withOpacity(0.3),
+              blurRadius: 5,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Stack(
+            children: [
+              displayTinderCardImage(size, index),
+              displayTinderCardUserDetails(size, index),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container displayTinderCardUserDetails(Size size, int index) {
+    return Container(
+      width: size.width,
+      height: size.height,
+      decoration: userDetailShadedBox(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Container(
+                  width: size.width * 0.72,
+                  child: Column(
+                    children: [
+                      userNameAndAgeRow(index),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      userActivityInfoRow(),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      userLikesRow(index)
+                    ],
+                  ),
+                ),
+                infoIcon(size)
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Row userLikesRow(int index) {
+    return Row(
+      children: List.generate(
+        itemsTemp[index]['likes'].length,
+        (indexLikes) {
+          if (indexLikes == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: white, width: 2),
+                    borderRadius: BorderRadius.circular(30),
+                    color: white.withOpacity(0.4)),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 3, bottom: 3, left: 10, right: 10),
+                  child: Text(
+                    itemsTemp[index]['likes'][indexLikes],
+                    style: const TextStyle(color: white),
+                  ),
+                ),
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: white.withOpacity(0.2)),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 3, bottom: 3, left: 10, right: 10),
+                child: Text(
+                  itemsTemp[index]['likes'][indexLikes],
+                  style: const TextStyle(color: white),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Row userNameAndAgeRow(int index) {
+    return Row(
+      children: [
+        name(index),
+        const SizedBox(
+          width: 10,
+        ),
+        age(index),
+      ],
+    );
+  }
+
+  Row userActivityInfoRow() {
+    return Row(
+      children: [
+        activeIcon(),
+        const SizedBox(
+          width: 10,
+        ),
+        activeText(),
+      ],
+    );
+  }
+
+  Container activeIcon() {
+    return Container(
+      width: 10,
+      height: 10,
+      decoration: const BoxDecoration(color: green, shape: BoxShape.circle),
+    );
+  }
+
+  Text activeText() {
+    return const Text(
+      "Recently Active",
+      style: TextStyle(
+        color: white,
+        fontSize: 16,
+      ),
+    );
+  }
+
+  Text age(int index) {
+    return Text(
+      itemsTemp[index]['age'],
+      style: const TextStyle(
+        color: white,
+        fontSize: 22,
+      ),
+    );
+  }
+
+  Text name(int index) {
+    return Text(
+      itemsTemp[index]['name'],
+      style: const TextStyle(
+          color: white, fontSize: 24, fontWeight: FontWeight.bold),
+    );
+  }
+
+  Expanded infoIcon(Size size) {
+    return Expanded(
+      child: Container(
+        width: size.width * 0.2,
+        child: const Center(
+          child: Icon(
+            Icons.info,
+            color: white,
+            size: 28,
+          ),
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration userDetailShadedBox() {
+    return BoxDecoration(
+      gradient: LinearGradient(
+        colors: [black.withOpacity(0.25), black.withOpacity(0)],
+        end: Alignment.topCenter,
+        begin: Alignment.bottomCenter,
+      ),
+    );
+  }
+
+  Container displayTinderCardImage(Size size, int index) {
+    return Container(
+      width: size.width,
+      height: size.height,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage(itemsTemp[index]['img']), fit: BoxFit.cover),
+      ),
+    );
+  }
+
+  Widget getBottomSheet() {
+    var size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
       height: 120,
@@ -51,130 +270,28 @@ class _ExplorePageState extends State<ExplorePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(item_icons.length, (index) {
-            return getContainer(
-              item_icons[index]["icon"],
-              item_icons[index]["size"],
-              item_icons[index]["icon_size"]
+            return Container(
+              width: item_icons[index]['size'],
+              height: item_icons[index]['size'],
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 10,
+                      // changes position of shadow
+                    ),
+                  ]),
+              child: Center(
+                child: SvgPicture.asset(
+                  item_icons[index]['icon'],
+                  width: item_icons[index]['icon_size'],
+                ),
+              ),
             );
           }),
-        ),
-      ),
-    );
-  }
-
-  Container getContainer(String svgPath, double size, double iconSize) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: white,
-          boxShadow: [BoxShadow(
-            color: grey.withOpacity(0.1),
-            spreadRadius: 5,
-            blurRadius: 10,
-          )
-          ]
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          svgPath,
-          width: iconSize,
-        ),
-      ),
-    );
-  }
-
-  Widget getBody() {
-    var size = MediaQuery
-        .of(context)
-        .size;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 120),
-      child: Container(
-        height: size.height,
-        child: TinderSwapCard(
-          maxWidth: size.width,
-          maxHeight: size.height * 0.75,
-          minWidth: size.width * 0.75,
-          minHeight: size.height * 0.6,
-          cardBuilder: (context, index) => Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [BoxShadow(
-                color: grey.withOpacity(0.3),
-                blurRadius: 5,
-                spreadRadius: 2,
-              )],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Stack(
-                children: [
-                  Container(
-                    width: size.width,
-                    height: size.height,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          itemsTemp[index]['img']
-                        ),
-                        fit: BoxFit.cover
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: size.width,
-                    height: size.height,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          black.withOpacity(0.25),
-                          black.withOpacity(0),
-                        ],
-                        end: Alignment.topCenter,
-                        begin: Alignment.bottomCenter,
-                      )
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: size.width * 0.75,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                          itemsTemp[index]["name"],
-                                        style: const TextStyle(
-                                          fontSize: 24,
-                                          color: white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          totalNum: itemLength,
         ),
       ),
     );

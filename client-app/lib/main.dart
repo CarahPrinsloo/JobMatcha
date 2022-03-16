@@ -1,4 +1,3 @@
-import 'package:client_app/views/home_page.dart';
 import 'package:client_app/views/onboarding_page.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +6,6 @@ void main() {
     title: 'JobMatcha',
     debugShowCheckedModeBanner: false,
     // initialRoute: OnboardingPage.routeName,
-    home: HomePage(),
+    home: OnboardingPage(),
   ));
 }

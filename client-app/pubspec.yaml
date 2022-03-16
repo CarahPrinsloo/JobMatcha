@@ -38,6 +38,7 @@ dependencies:
   line_icons:
   flutter_svg:
   flutter_custom_clippers: ^1.1.2
+  flutter_bloc: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/girls/
+    - assets/logo.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

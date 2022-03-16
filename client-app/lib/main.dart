@@ -1,9 +1,12 @@
-import 'package:client_app/views/root_app.dart';
+import 'package:client_app/views/home_page.dart';
+import 'package:client_app/views/onboarding_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MaterialApp(
+    title: 'JobMatcha',
     debugShowCheckedModeBanner: false,
-    home: RootApp(),
+    // initialRoute: OnboardingPage.routeName,
+    home: HomePage(),
   ));
 }

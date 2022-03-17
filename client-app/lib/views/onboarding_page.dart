@@ -1,3 +1,4 @@
+import 'package:client_app/widgets/onboarding/add_bio_page.dart';
 import 'package:client_app/widgets/onboarding/add_image_page.dart';
 import 'package:client_app/widgets/onboarding/sign_up_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,7 +38,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           children: [
             signUpPage,
             imagePage,
-            page(Colors.deepPurple, "Page 3"),
+            AddLanguagePage(),
           ],
         ),
       ),

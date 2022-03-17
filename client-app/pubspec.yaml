@@ -41,6 +41,9 @@ dependencies:
   flutter_bloc: ^8.0.1
   smooth_page_indicator: ^1.0.0+2
   dropdown_formfield: ^0.1.4
+  image_picker: ^0.8.4+2
+  path_provider: ^2.0.9
+  platform: ^3.1.0
 
 dev_dependencies:
   flutter_test:

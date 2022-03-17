@@ -1,7 +1,8 @@
-import 'package:client_app/views/home_page.dart';
-import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:client_app/widgets/onboarding/add_image_page.dart';
+import 'package:client_app/widgets/onboarding/sign_up_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -22,43 +23,58 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userInfoFormKey = GlobalKey<FormState>();
+
+    SignUpPage signUpPage =
+        SignUpPage(controller: controller, formKey: userInfoFormKey);
+    AddImagePage imagePage = AddImagePage();
+
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.only(bottom: 80),
         child: PageView(
           controller: controller,
           children: [
-            page(Colors.deepPurpleAccent, "Page 1"),
-            page(Colors.deepPurple, "Page 2"),
-            const SignUpPage(),
+            signUpPage,
+            imagePage,
+            page(Colors.deepPurple, "Page 3"),
           ],
         ),
       ),
-      bottomSheet: bottomSheet(),
+      bottomSheet: bottomSheet(userInfoFormKey, signUpPage, imagePage),
     );
   }
 
-  Container bottomSheet() {
+  Container bottomSheet(GlobalKey<FormState> userInfoFormKey,
+      SignUpPage signUpPage, AddImagePage imagePage) {
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          TextButton(
-            child: const Text("SKIP"),
-            onPressed: () => controller.jumpToPage(2),
-          ),
+          const SizedBox(width: 42),
           Center(
             child: pageIndicator(),
           ),
           TextButton(
             child: const Text("NEXT"),
             onPressed: () {
-              controller.nextPage(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeOut,
-              );
+              if ((controller.page == 0 &&
+                      _userFormDetailsCompleted(signUpPage, userInfoFormKey)) ||
+                  (controller.page == 1 && imagePage.isImageAdded()) ||
+                  (controller.page == 2)) {
+                controller.nextPage(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeOut,
+                );
+              } else if (!imagePage.isImageAdded()) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("No image was selected."),
+                  ),
+                );
+              }
             },
           ),
         ],
@@ -70,11 +86,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return SmoothPageIndicator(
       controller: controller,
       count: 3,
-      onDotClicked: (index) => controller.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeIn,
-      ),
     );
   }
 
@@ -86,184 +97,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ),
     );
   }
-}
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
-
-  @override
-  _SignUpPageState createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
-  final formKey = GlobalKey<FormState>(); //key for form
-
-  late String email;
-  late String fullName;
-  late int age;
-  late String jobTitle;
-
-  @override
-  void initState() {
-    super.initState();
-    jobTitle = "";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-
-    return Container(
-      padding: const EdgeInsets.only(left: 40, right: 40),
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: height * 0.04),
-            const Text(
-              "WELCOME",
-              style: TextStyle(fontSize: 30, color: Colors.deepPurple),
-            ),
-            SizedBox(height: height * 0.05),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: "Enter your email address",
-              ),
-              validator: (value) {
-                if (value != null && value.isNotEmpty && _isValidEmail(value)) {
-                  email = value;
-                  return null;
-                }
-                email = "";
-                return "Required: Enter a valid email address";
-              },
-            ),
-            SizedBox(height: height * 0.05),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: "Enter your full name",
-              ),
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  fullName = value;
-                  return null;
-                }
-                fullName = "";
-                return "Required: Enter your full name";
-              },
-            ),
-            SizedBox(height: height * 0.05),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: "Enter your age",
-              ),
-              validator: (value) {
-                if (value != null && value.isNotEmpty && _isInteger(value) && (int.parse(value) >= 1)) {
-                  age = int.parse(value);
-                  return null;
-                }
-                age = -1;
-                return "Required: Enter your age";
-              },
-            ),
-            SizedBox(height: height * 0.05),
-            jobTitleDropDownList(),
-            ElevatedButton(
-              onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  formKey.currentState!.save();
-                  // add user here w/ async method
-
-                  if (!(fullName == null || fullName.isEmpty)
-                  && !(email == null || email.isEmpty)
-                  && !(age == null && age <= 0)
-                  && !(jobTitle == null || jobTitle.isEmpty)) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
-                  }
-                }
-              },
-              child: Text("Submit"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  DropDownFormField jobTitleDropDownList() {
-    return DropDownFormField(
-      titleText: 'Job Title',
-      hintText: 'Choose your job title',
-      value: jobTitle,
-      onSaved: (value) {
-        setState(() {
-          jobTitle = value;
-        });
-      },
-      onChanged: (value) {
-        setState(() {
-          jobTitle = value;
-        });
-      },
-      dataSource: const [
-        {
-          "display": "Full Stack Software Developer",
-          "value": "Full Stack Software Developer",
-        },
-        {
-          "display": "Backend Software Developer",
-          "value": "Backend Software Developer",
-        },
-        {
-          "display": "Frontend Software Developer",
-          "value": "Frontend Software Developer",
-        },
-        {
-          "display": "Web Developer",
-          "value": "Web Developer",
-        },
-        {
-          "display": "Data Scientist",
-          "value": "Data Scientist",
-        },
-        {
-          "display": "Mobile Developer",
-          "value": "Mobile Developer",
-        },
-        {
-          "display": "DevOps Developer",
-          "value": "DevOps Developer",
-        },
-      ],
-      textField: 'display',
-      valueField: 'value',
-      validator: (value) {
-        if (value != null && value.isNotEmpty) {
-          jobTitle = value;
-          return null;
-        }
-        jobTitle = "";
-        return "Required: Choose a job title";
-      },
-    );
-  }
-
-  bool _isValidEmail(String email) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
-  }
-
-  bool _isInteger(value) {
-    try {
-      double.parse(value);
-    } on FormatException {
+  bool _userFormDetailsCompleted(
+      SignUpPage signUpPage, GlobalKey<FormState> userInfoFormKey) {
+    if (!(userInfoFormKey.currentState!.validate())) {
       return false;
     }
-    return true;
+    userInfoFormKey.currentState!.save();
+
+    String fullName = signUpPage.getFullName();
+    String email = signUpPage.getEmailAddress();
+    String jobTitle = signUpPage.getJobTitle();
+    int age = signUpPage.getAge();
+
+    return !(fullName == null || fullName.isEmpty) &&
+        !(email == null || email.isEmpty) &&
+        !(age == null && age <= 0) &&
+        !(jobTitle == null || jobTitle.isEmpty);
   }
 }

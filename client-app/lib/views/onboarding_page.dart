@@ -1,9 +1,9 @@
-import 'package:client_app/widgets/onboarding/add_bio_page.dart';
+import 'package:client_app/widgets/onboarding/add_education/add_education_page.dart';
+import 'package:client_app/widgets/onboarding/add_language/add_language_page.dart';
 import 'package:client_app/widgets/onboarding/add_image_page.dart';
 import 'package:client_app/widgets/onboarding/sign_up_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -38,7 +38,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
           children: [
             signUpPage,
             imagePage,
-            AddLanguagePage(),
+            const AddLanguagePage(),
+            const AddEducationPage(),
           ],
         ),
       ),

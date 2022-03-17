@@ -1,7 +1,7 @@
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'add_bio_page.dart';
+import 'add_language_page.dart';
 
 class LanguagesDropDownList extends StatefulWidget {
   final int index;

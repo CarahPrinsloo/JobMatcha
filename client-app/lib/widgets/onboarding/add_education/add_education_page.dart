@@ -1,17 +1,18 @@
+import 'package:client_app/models/education.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'language_drop_down_list.dart';
+import 'education_form_fields.dart';
 
-class AddLanguagePage extends StatefulWidget {
-  const AddLanguagePage({Key? key}) : super(key: key);
+class AddEducationPage extends StatefulWidget {
+  const AddEducationPage({Key? key}) : super(key: key);
 
   @override
-  AddLanguagePageState createState() => AddLanguagePageState();
+  AddEducationPageState createState() => AddEducationPageState();
 }
 
-class AddLanguagePageState extends State<AddLanguagePage> {
-  static List<String?> languageList = [null];
+class AddEducationPageState extends State<AddEducationPage> {
+  static List<Education?> educationList = [null];
 
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _controller;
@@ -41,10 +42,10 @@ class AddLanguagePageState extends State<AddLanguagePage> {
               height: 20,
             ),
             const Text(
-              'Add Languages',
+              'Add Education',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
             ),
-            ..._getLanguages(),
+            ..._getEducation(),
             const SizedBox(
               height: 40,
             ),
@@ -54,23 +55,23 @@ class AddLanguagePageState extends State<AddLanguagePage> {
     );
   }
 
-  List<Widget> _getLanguages() {
-    List<Widget> friendsTextFieldsList = [];
-    for (int i = 0; i < languageList.length; i++) {
-      friendsTextFieldsList.add(Padding(
+  List<Widget> _getEducation() {
+    List<Widget> educationTextFieldsList = [];
+    for (int i = 0; i < educationList.length; i++) {
+      educationTextFieldsList.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Row(
           children: [
-            Expanded(child: LanguagesDropDownList(i)),
+            Expanded(child: EducationFormFields(i)),
             const SizedBox(
               width: 16,
             ),
-            _addRemoveButton(i == languageList.length - 1, i),
+            _addRemoveButton(i == educationList.length - 1, i),
           ],
         ),
       ));
     }
-    return friendsTextFieldsList;
+    return educationTextFieldsList;
   }
 
   Widget _addRemoveButton(bool add, int index) {
@@ -78,9 +79,9 @@ class AddLanguagePageState extends State<AddLanguagePage> {
       onTap: () {
         if (add) {
           // add new drop down list at the top of all drop down lists
-          languageList.insert(0, null);
+          educationList.insert(0, null);
         } else {
-          languageList.removeAt(index);
+          educationList.removeAt(index);
         }
         setState(() {});
       },

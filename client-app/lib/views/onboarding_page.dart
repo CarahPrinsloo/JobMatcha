@@ -1,10 +1,14 @@
+import 'package:client_app/widgets/onboarding/about_me_page.dart';
 import 'package:client_app/widgets/onboarding/add_education/add_education_page.dart';
 import 'package:client_app/widgets/onboarding/add_language/add_language_page.dart';
 import 'package:client_app/widgets/onboarding/add_image_page.dart';
+import 'package:client_app/widgets/onboarding/add_work_experience/add_work_experience_page.dart';
 import 'package:client_app/widgets/onboarding/sign_up_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import 'home_page.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key? key}) : super(key: key);
@@ -24,11 +28,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userInfoFormKey = GlobalKey<FormState>();
-
     SignUpPage signUpPage =
-        SignUpPage(controller: controller, formKey: userInfoFormKey);
+        SignUpPage(controller: controller, formKey: GlobalKey<FormState>());
     AddImagePage imagePage = AddImagePage();
+    AddLanguagePage addLanguagePage = AddLanguagePage(formKey: GlobalKey<FormState>());
+    AboutMePage aboutMePage = AboutMePage(formKey: GlobalKey<FormState>());
 
     return Scaffold(
       body: Container(
@@ -38,17 +42,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
           children: [
             signUpPage,
             imagePage,
-            const AddLanguagePage(),
+            addLanguagePage,
             const AddEducationPage(),
+            const AddWorkExperiencePage(),
+            aboutMePage,
           ],
         ),
       ),
-      bottomSheet: bottomSheet(userInfoFormKey, signUpPage, imagePage),
+      bottomSheet: bottomSheet(signUpPage, imagePage, addLanguagePage, aboutMePage),
     );
   }
 
-  Container bottomSheet(GlobalKey<FormState> userInfoFormKey,
-      SignUpPage signUpPage, AddImagePage imagePage) {
+  Container bottomSheet(SignUpPage signUpPage, AddImagePage imagePage, AddLanguagePage addLanguagePage, AboutMePage aboutMePage) {
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 80),
@@ -63,18 +68,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: const Text("NEXT"),
             onPressed: () {
               if ((controller.page == 0 &&
-                      _userFormDetailsCompleted(signUpPage, userInfoFormKey)) ||
-                  (controller.page == 1 && imagePage.isImageAdded()) ||
-                  (controller.page == 2)) {
+                      _userFormDetailsCompleted(signUpPage)) ||
+                  (controller.page == 1 && imagePage.getState().isImageAdded()) ||
+                  (controller.page == 2 && addLanguagePage.state.isAdded()) ||
+                  (controller.page != null && controller.page! > 2 && controller.page != 5)
+              ) {
                 controller.nextPage(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeOut,
                 );
-              } else if (!imagePage.isImageAdded()) {
+              } else if (!imagePage.getState().isImageAdded()) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("No image was selected."),
                   ),
+                );
+              } else if (controller.page == 5 && _aboutMeDetailsCompleted(aboutMePage)) {
+                // TODO: add user to server DB
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               }
             },
@@ -100,21 +113,33 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  bool _userFormDetailsCompleted(
-      SignUpPage signUpPage, GlobalKey<FormState> userInfoFormKey) {
-    if (!(userInfoFormKey.currentState!.validate())) {
+  bool _userFormDetailsCompleted(SignUpPage signUpPage) {
+    if (!(signUpPage.getKey().currentState!.validate())) {
       return false;
     }
-    userInfoFormKey.currentState!.save();
+    signUpPage.getKey().currentState!.save();
 
-    String fullName = signUpPage.getFullName();
-    String email = signUpPage.getEmailAddress();
-    String jobTitle = signUpPage.getJobTitle();
-    int age = signUpPage.getAge();
+    String fullName = signUpPage.getState().getFullName();
+    String email = signUpPage.getState().getEmailAddress();
+    String jobTitle = signUpPage.getState().getJobTitle();
+    int age = signUpPage.getState().getAge();
 
     return !(fullName == null || fullName.isEmpty) &&
         !(email == null || email.isEmpty) &&
         !(age == null && age <= 0) &&
         !(jobTitle == null || jobTitle.isEmpty);
+  }
+
+  bool _aboutMeDetailsCompleted(AboutMePage aboutMePage) {
+    if (!(aboutMePage.getState().formKey.currentState!.validate())) {
+      return false;
+    }
+    aboutMePage.getState().formKey.currentState!.save();
+
+    String? bio = aboutMePage.getState().getBio();
+    String? link = aboutMePage.getState().getGithubLink();
+
+    return !(bio == null || bio.isEmpty) &&
+        !(link == null || link.isEmpty);
   }
 }

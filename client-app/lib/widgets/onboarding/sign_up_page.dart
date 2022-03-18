@@ -16,20 +16,12 @@ class SignUpPage extends StatefulWidget {
     return state;
   }
 
-  String getFullName() {
-    return state.getFullName();
+  _SignUpPageState getState() {
+    return state;
   }
 
-  String getEmailAddress() {
-    return state.getEmailAddress();
-  }
-
-  int getAge() {
-    return state.getAge();
-  }
-
-  String getJobTitle() {
-    return state.getJobTitle();
+  GlobalKey<FormState> getKey() {
+    return formKey;
   }
 }
 

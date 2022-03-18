@@ -5,16 +5,20 @@ import 'add_language_page.dart';
 
 class LanguagesDropDownList extends StatefulWidget {
   final int index;
+  final AddLanguagePageState addLanguageState;
 
-  const LanguagesDropDownList(this.index);
+  const LanguagesDropDownList({required this.index, required this.addLanguageState});
 
   @override
-  _LanguagesDropDownListState createState() => _LanguagesDropDownListState();
+  _LanguagesDropDownListState createState() => _LanguagesDropDownListState(addLanguagePageState: addLanguageState);
 }
 
 class _LanguagesDropDownListState extends State<LanguagesDropDownList> {
   late TextEditingController _controller;
   late String _language;
+  late AddLanguagePageState addLanguagePageState;
+
+  _LanguagesDropDownListState({required this.addLanguagePageState});
 
   @override
   void initState() {
@@ -32,7 +36,7 @@ class _LanguagesDropDownListState extends State<LanguagesDropDownList> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _controller.text = AddLanguagePageState.languageList[widget.index] ?? '';
+      _controller.text = addLanguagePageState.languageList[widget.index] ?? '';
     });
 
     return languageDropDownList();
@@ -46,11 +50,13 @@ class _LanguagesDropDownListState extends State<LanguagesDropDownList> {
       onSaved: (value) {
         setState(() {
           _language = value;
+          addLanguagePageState.setLanguageIsAdded(true);
         });
       },
       onChanged: (value) {
         setState(() {
-          AddLanguagePageState.languageList[0] = value;
+          addLanguagePageState.languageList[0] = value;
+          addLanguagePageState.setLanguageIsAdded(true);
           _language = value;
         });
       },
@@ -105,6 +111,7 @@ class _LanguagesDropDownListState extends State<LanguagesDropDownList> {
       validator: (value) {
         if (value != null && value.isNotEmpty) {
           _language = value;
+          addLanguagePageState.setLanguageIsAdded(true);
           return null;
         }
         _language = "";

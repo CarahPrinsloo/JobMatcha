@@ -15,8 +15,8 @@ class AddImagePage extends StatefulWidget {
     return state;
   }
 
-  bool isImageAdded() {
-    return state._imageAdded;
+  _AddImagePageState getState() {
+    return state;
   }
 }
 

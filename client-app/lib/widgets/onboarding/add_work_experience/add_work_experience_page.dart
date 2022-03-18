@@ -1,34 +1,21 @@
+import 'package:client_app/models/work_experience.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'language_drop_down_list.dart';
+import 'work_experience_form_fields.dart';
 
-class AddLanguagePage extends StatefulWidget {
-  late AddLanguagePageState state;
-  late GlobalKey<FormState> formKey;
-
-  AddLanguagePage({Key? key, required this.formKey}) : super(key: key);
+class AddWorkExperiencePage extends StatefulWidget {
+  const AddWorkExperiencePage({Key? key}) : super(key: key);
 
   @override
-  AddLanguagePageState createState() {
-    state = AddLanguagePageState(formKey: formKey);
-    return state;
-  }
-
-  AddLanguagePageState getState() {
-    return state;
-  }
+  AddWorkExperiencePageState createState() => AddWorkExperiencePageState();
 }
 
-class AddLanguagePageState extends State<AddLanguagePage> {
-  List<String?> languageList = [null];
+class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
+  static List<WorkExperience?> workExperienceList = [null];
 
-  late GlobalKey<FormState> formKey;
+  final _formKey = GlobalKey<FormState>();
   late TextEditingController _controller;
-
-  bool _languageIsAdded = false;
-
-  AddLanguagePageState({Key? key, required this.formKey});
 
   @override
   void initState() {
@@ -45,7 +32,7 @@ class AddLanguagePageState extends State<AddLanguagePage> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -55,10 +42,10 @@ class AddLanguagePageState extends State<AddLanguagePage> {
               height: 20,
             ),
             const Text(
-              'Add Languages',
+              'Add your work experience',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
             ),
-            ..._getLanguages(),
+            ..._getWorkExperience(),
             const SizedBox(
               height: 40,
             ),
@@ -68,33 +55,32 @@ class AddLanguagePageState extends State<AddLanguagePage> {
     );
   }
 
-  List<Widget> _getLanguages() {
-    List<Widget> languagesTextFieldsList = [];
-    for (int i = 0; i < languageList.length; i++) {
-      languagesTextFieldsList.add(Padding(
+  List<Widget> _getWorkExperience() {
+    List<Widget> workExperienceTextFieldsList = [];
+    for (int i = 0; i < workExperienceList.length; i++) {
+      workExperienceTextFieldsList.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Row(
           children: [
-            Expanded(child: LanguagesDropDownList(index: i, addLanguageState: this)),
+            Expanded(child: WorkExperienceFormFields(i)),
             const SizedBox(
               width: 16,
             ),
-            _addRemoveButton(i == languageList.length - 1, i),
+            _addRemoveButton(i == workExperienceList.length - 1, i),
           ],
         ),
       ));
     }
-    return languagesTextFieldsList;
+    return workExperienceTextFieldsList;
   }
 
   Widget _addRemoveButton(bool add, int index) {
     return InkWell(
       onTap: () {
         if (add) {
-          // add new drop down list at the top of all drop down lists
-          languageList.insert(0, null);
+          workExperienceList.insert(0, null);
         } else {
-          languageList.removeAt(index);
+          workExperienceList.removeAt(index);
         }
         setState(() {});
       },
@@ -111,13 +97,5 @@ class AddLanguagePageState extends State<AddLanguagePage> {
         ),
       ),
     );
-  }
-
-  bool isAdded(){
-    return _languageIsAdded;
-  }
-
-  void setLanguageIsAdded(bool value) {
-    _languageIsAdded = value;
   }
 }

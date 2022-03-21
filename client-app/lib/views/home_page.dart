@@ -16,19 +16,25 @@ class _HomePageState extends State<HomePage> {
   List<User> users = [
     const User(
       id: 1,
-      name: "Jules Biden",
+      fullName: "Jules Biden",
       age: 32,
-      imageUrls: ["images/girls/img_1.jpeg"],
+      image: "images/girls/img_1.jpeg",
       bio: "Live Love Laugh",
       jobTitle: "Software Developer",
+      education: [],
+      workExperience: [],
+      projectsLink: "",
     ),
     const User(
       id: 1,
-      name: "Jade Biden",
-      age: 32,
-      imageUrls: ["images/girls/img_2.jpeg"],
-      bio: "Live Love Laugh",
-      jobTitle: "Software Developer",
+      fullName: "Jake Biden",
+      age: 22,
+      image: "images/girls/img_2.jpeg",
+      bio: "This is my bio",
+      jobTitle: "Full Stack Software Developer",
+      education: [],
+      workExperience: [],
+      projectsLink: "",
     )
   ];
 

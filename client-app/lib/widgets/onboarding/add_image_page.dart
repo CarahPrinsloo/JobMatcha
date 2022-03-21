@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddImagePage extends StatefulWidget {
-  late _AddImagePageState state;
+  _AddImagePageState? state = null;
 
   AddImagePage({Key? key}) : super(key: key);
 
@@ -15,7 +15,7 @@ class AddImagePage extends StatefulWidget {
     return state;
   }
 
-  _AddImagePageState getState() {
+  _AddImagePageState? getState() {
     return state;
   }
 }
@@ -28,7 +28,7 @@ class _AddImagePageState extends State<AddImagePage> {
     final double height = MediaQuery.of(context).size.height;
 
     return Container(
-      padding: const EdgeInsets.only(left: 40, right: 40),
+      padding: EdgeInsets.only(left: height * (40/height), right: height * (40/height)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,11 +45,14 @@ class _AddImagePageState extends State<AddImagePage> {
   }
 
   Padding addImageIconButton() {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
+      padding: EdgeInsets.only(left: height * (10/height), right: height * (10/height)),
       child: Container(
-        height: 150,
-        width: 100,
+        height: width * (150/width),
+        width: width * (100/width),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: const Border(

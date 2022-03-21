@@ -1,3 +1,4 @@
+import 'package:client_app/models/user.dart';
 import 'package:client_app/widgets/onboarding/about_me_page.dart';
 import 'package:client_app/widgets/onboarding/add_education/add_education_page.dart';
 import 'package:client_app/widgets/onboarding/add_language/add_language_page.dart';
@@ -31,7 +32,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     SignUpPage signUpPage =
         SignUpPage(controller: controller, formKey: GlobalKey<FormState>());
     AddImagePage imagePage = AddImagePage();
-    AddLanguagePage addLanguagePage = AddLanguagePage(formKey: GlobalKey<FormState>());
+    AddLanguagePage addLanguagePage =
+        AddLanguagePage(formKey: GlobalKey<FormState>());
     AboutMePage aboutMePage = AboutMePage(formKey: GlobalKey<FormState>());
 
     return Scaffold(
@@ -49,11 +51,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ],
         ),
       ),
-      bottomSheet: bottomSheet(signUpPage, imagePage, addLanguagePage, aboutMePage),
+      bottomSheet:
+          bottomSheet(signUpPage, imagePage, addLanguagePage, aboutMePage),
     );
   }
 
-  Container bottomSheet(SignUpPage signUpPage, AddImagePage imagePage, AddLanguagePage addLanguagePage, AboutMePage aboutMePage) {
+  Container bottomSheet(SignUpPage signUpPage, AddImagePage imagePage,
+      AddLanguagePage addLanguagePage, AboutMePage aboutMePage) {
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 80),
@@ -69,22 +73,41 @@ class _OnboardingPageState extends State<OnboardingPage> {
             onPressed: () {
               if ((controller.page == 0 &&
                       _userFormDetailsCompleted(signUpPage)) ||
-                  (controller.page == 1 && imagePage.getState().isImageAdded()) ||
-                  (controller.page == 2 && addLanguagePage.state.isAdded()) ||
-                  (controller.page != null && controller.page! > 2 && controller.page != 5)
-              ) {
+                  (imagePage.getState() != null &&
+                      controller.page == 1 &&
+                      imagePage.getState()!.isImageAdded()) ||
+                  (addLanguagePage.getState() != null &&
+                      controller.page == 2 &&
+                      addLanguagePage.getState()!.isAdded()) ||
+                  (controller.page != null &&
+                      controller.page! > 2 &&
+                      controller.page != 5)) {
                 controller.nextPage(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeOut,
                 );
-              } else if (!imagePage.getState().isImageAdded()) {
+              } else if (imagePage.getState() != null &&
+                  !imagePage.getState()!.isImageAdded()) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("No image was selected."),
                   ),
                 );
-              } else if (controller.page == 5 && _aboutMeDetailsCompleted(aboutMePage)) {
+              } else if (controller.page == 5 &&
+                  _aboutMeDetailsCompleted(aboutMePage)) {
                 // TODO: add user to server DB
+                User user = User(
+                  id: -1,
+                  fullName: signUpPage.getState()!.getFullName()!,
+                  age: signUpPage.getState()!.getAge()!,
+                  image: "",
+                  bio: aboutMePage.getState()!.getBio()!,
+                  jobTitle: signUpPage.getState()!.getJobTitle()!,
+                  education: [],
+                  workExperience: [],
+                  projectsLink: "",
+                );
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const HomePage()),
@@ -119,14 +142,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
     signUpPage.getKey().currentState!.save();
 
-    String fullName = signUpPage.getState().getFullName();
-    String email = signUpPage.getState().getEmailAddress();
-    String jobTitle = signUpPage.getState().getJobTitle();
-    int age = signUpPage.getState().getAge();
+    if (signUpPage.getState() == null) {
+      return false;
+    }
+
+    String? fullName = signUpPage.getState()!.getFullName();
+    String? email = signUpPage.getState()!.getEmailAddress();
+    String? jobTitle = signUpPage.getState()!.getJobTitle();
+    int? age = signUpPage.getState()!.getAge();
 
     return !(fullName == null || fullName.isEmpty) &&
         !(email == null || email.isEmpty) &&
-        !(age == null && age <= 0) &&
+        !(age == null || (age != null && age <= 0)) &&
         !(jobTitle == null || jobTitle.isEmpty);
   }
 
@@ -139,7 +166,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     String? bio = aboutMePage.getState().getBio();
     String? link = aboutMePage.getState().getGithubLink();
 
-    return !(bio == null || bio.isEmpty) &&
-        !(link == null || link.isEmpty);
+    return !(bio == null || bio.isEmpty) && !(link == null || link.isEmpty);
   }
 }

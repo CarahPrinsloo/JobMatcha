@@ -4,18 +4,19 @@ import 'package:flutter/material.dart';
 import 'language_drop_down_list.dart';
 
 class AddLanguagePage extends StatefulWidget {
-  late AddLanguagePageState state;
+  AddLanguagePageState? state;
   late GlobalKey<FormState> formKey;
 
   AddLanguagePage({Key? key, required this.formKey}) : super(key: key);
 
   @override
   AddLanguagePageState createState() {
-    state = AddLanguagePageState(formKey: formKey);
+    AddLanguagePageState state = AddLanguagePageState(formKey: formKey);
+    this.state = state;
     return state;
   }
 
-  AddLanguagePageState getState() {
+  AddLanguagePageState? getState() {
     return state;
   }
 }

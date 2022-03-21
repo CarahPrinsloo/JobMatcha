@@ -52,7 +52,7 @@ class UserCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${user.name}, ${user.age}',
+            '${user.fullName}, ${user.age}',
             style: Theme.of(context)
                 .textTheme
                 .headline2!
@@ -90,7 +90,7 @@ class UserCard extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage(user.imageUrls[0]),
+          image: AssetImage(user.image[0]),
         ),
         borderRadius: BorderRadius.circular(5.0),
         boxShadow: [

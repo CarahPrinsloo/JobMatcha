@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<User> users = [
     const User(
-      id: 1,
       fullName: "Jules Biden",
       age: 32,
       image: "images/girls/img_1.jpeg",
@@ -26,7 +25,6 @@ class _HomePageState extends State<HomePage> {
       projectsLink: "",
     ),
     const User(
-      id: 1,
       fullName: "Jake Biden",
       age: 22,
       image: "images/girls/img_2.jpeg",

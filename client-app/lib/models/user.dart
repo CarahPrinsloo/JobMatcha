@@ -3,7 +3,6 @@ import 'package:client_app/models/work_experience.dart';
 
 class User {
   // Basic user info
-  final int id;
   final String fullName;
   final int age;
   final String image;
@@ -16,7 +15,6 @@ class User {
   final String projectsLink;
 
   const User({
-    required this.id,
     required this.fullName,
     required this.age,
     required this.image,
@@ -27,5 +25,5 @@ class User {
     required this.projectsLink
   });
 
-  List<Object?> get props => [id, fullName, age, image, bio, jobTitle, education, workExperience, projectsLink];
+  List<Object?> get props => [fullName, age, image, bio, jobTitle, education, workExperience, projectsLink];
 }

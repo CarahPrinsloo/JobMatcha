@@ -34,6 +34,8 @@ class _SignUpPageState extends State<SignUpPage> {
   late String? fullName;
   late int? age;
   late String? jobTitle;
+  String? password;
+  String? confirmedPassword;
 
   _SignUpPageState({required this.controller, required this.formKey});
 
@@ -62,6 +64,10 @@ class _SignUpPageState extends State<SignUpPage> {
             SizedBox(height: height * 0.05),
             emailAddressTextFormField(),
             SizedBox(height: height * 0.05),
+            passwordTextFormField(),
+            SizedBox(height: height * 0.05),
+            confirmPasswordTextFormField(),
+            SizedBox(height: height * 0.05),
             fullNameTextFormField(),
             SizedBox(height: height * 0.05),
             ageTextFormField(),
@@ -70,6 +76,44 @@ class _SignUpPageState extends State<SignUpPage> {
           ],
         ),
       ),
+    );
+  }
+
+  TextFormField passwordTextFormField() {
+    return TextFormField(
+      decoration: const InputDecoration(
+        labelText: "Enter your password",
+      ),
+      obscureText: true,
+      enableSuggestions: false,
+      autocorrect: false,
+      validator: (value) {
+        if (value != null && value.isNotEmpty) {
+            password = value;
+            return null;
+        }
+        password = null;
+        return "Required: enter a password";
+      },
+    );
+  }
+
+  TextFormField confirmPasswordTextFormField() {
+    return TextFormField(
+      decoration: const InputDecoration(
+        labelText: "Confirm your password",
+      ),
+      obscureText: true,
+      enableSuggestions: false,
+      autocorrect: false,
+      validator: (value) {
+        if (value != null && value.isNotEmpty) {
+            confirmedPassword = value;
+            return null;
+        }
+        confirmedPassword = null;
+        return "Required: the passwords do not match";
+      },
     );
   }
 
@@ -193,6 +237,20 @@ class _SignUpPageState extends State<SignUpPage> {
 
   String? getJobTitle() {
     return jobTitle;
+  }
+
+  String? getPassword() {
+    return password;
+  }
+
+  String? getConfirmedPassword() {
+    return confirmedPassword;
+  }
+
+  bool passwordIsValid() {
+    bool passwordIsAdded = !(password == null || password!.isEmpty);
+    bool confirmedPasswordIsAdded = !(confirmedPassword == null || confirmedPassword!.isEmpty);
+    return passwordIsAdded && confirmedPasswordIsAdded && password == confirmedPassword;
   }
 
   bool _isValidEmail(String email) {

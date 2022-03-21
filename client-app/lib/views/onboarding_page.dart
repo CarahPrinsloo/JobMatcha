@@ -1,3 +1,4 @@
+import 'package:client_app/controller/user_controller.dart';
 import 'package:client_app/models/user.dart';
 import 'package:client_app/widgets/onboarding/about_me_page.dart';
 import 'package:client_app/widgets/onboarding/add_education/add_education_page.dart';
@@ -70,21 +71,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
           TextButton(
             child: const Text("NEXT"),
-            onPressed: () {
-              if ((controller.page == 0 &&
-                      _userFormDetailsCompleted(signUpPage)) ||
-                  (imagePage.getState() != null &&
-                      controller.page == 1 &&
-                      imagePage.getState()!.isImageAdded()) ||
-                  (addLanguagePage.getState() != null &&
-                      controller.page == 2 &&
-                      addLanguagePage.getState()!.isAdded()) ||
-                  (controller.page != null &&
-                      controller.page! > 2 &&
-                      controller.page != 5)) {
+            onPressed: () async {
+              if ((controller.page == 0 && _userFormDetailsCompleted(signUpPage)) ||
+                  (imagePage.getState() != null && controller.page == 1 && imagePage.getState()!.isImageAdded()) ||
+                  (addLanguagePage.getState() != null && controller.page == 2 && addLanguagePage.getState()!.isAdded()) ||
+                  (controller.page != null && controller.page! > 2 && controller.page != 5)) {
                 controller.nextPage(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeOut,
+                );
+              } else if (
+              controller.page == 0 && signUpPage.getState()!.getPassword() != null &&
+                  signUpPage.getState()!.getConfirmedPassword() != null &&
+                  !signUpPage.getState()!.passwordIsValid()
+              ) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("The passwords entries do not match."),
+                  ),
                 );
               } else if (imagePage.getState() != null &&
                   !imagePage.getState()!.isImageAdded()) {
@@ -95,29 +99,44 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 );
               } else if (controller.page == 5 &&
                   _aboutMeDetailsCompleted(aboutMePage)) {
-                // TODO: add user to server DB
                 User user = User(
-                  id: -1,
                   fullName: signUpPage.getState()!.getFullName()!,
                   age: signUpPage.getState()!.getAge()!,
                   image: "",
-                  bio: aboutMePage.getState()!.getBio()!,
-                  jobTitle: signUpPage.getState()!.getJobTitle()!,
+                  bio: aboutMePage.getState().getBio() ?? "",
+                  jobTitle: signUpPage.getState()!.getJobTitle() ?? "",
                   education: [],
                   workExperience: [],
                   projectsLink: "",
                 );
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                UserController controller = UserController();
+                await controller.addUser(user, context);
+                redirectIfOnboardingSuccessful(controller);
               }
             },
           ),
         ],
       ),
     );
+  }
+
+  void redirectIfOnboardingSuccessful(UserController controller) {
+    if (
+    controller.getIsSuccessfulResponse() != null
+        && controller.getIsSuccessfulResponse() == true
+    ) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Could not register."),
+        ),
+      );
+    }
   }
 
   SmoothPageIndicator pageIndicator() {
@@ -154,7 +173,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return !(fullName == null || fullName.isEmpty) &&
         !(email == null || email.isEmpty) &&
         !(age == null || (age != null && age <= 0)) &&
-        !(jobTitle == null || jobTitle.isEmpty);
+        !(jobTitle == null || jobTitle.isEmpty) &&
+        (signUpPage.getState()!.passwordIsValid());
   }
 
   bool _aboutMeDetailsCompleted(AboutMePage aboutMePage) {

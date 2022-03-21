@@ -36,8 +36,8 @@ public class WebApiHandler {
 
         if (workExperience != null && education != null) {
             addUserToDb(user);
-            addWorkExperienceToDb(user, workExperience);
-            addEducationToDb(user, education);
+            addWorkExperienceToDb(user.getEmail(), workExperience);
+            addEducationToDb(user.getEmail(), education);
 
             context.status(201);
             return ;
@@ -45,18 +45,18 @@ public class WebApiHandler {
         context.status(400);
     }
 
-    private void addEducationToDb(User user, List<Education> education) throws ClassNotFoundException, SQLException {
+    private void addEducationToDb(String userEmail, List<Education> education) throws ClassNotFoundException, SQLException {
         educationDb = new EducationDbConnect();
         for(Education item : education) {
-            educationDb.add(item.educationToDO(user.getEmail()));
+            educationDb.add(item.educationToDO(userEmail));
         }
         educationDb.disconnect();
     }
 
-    private void addWorkExperienceToDb(User user, List<WorkExperience> workExperience) throws ClassNotFoundException, SQLException {
+    private void addWorkExperienceToDb(String userEmail, List<WorkExperience> workExperience) throws ClassNotFoundException, SQLException {
         workExperienceDb = new WorkExperienceDbConnect();
         for(WorkExperience item : workExperience) {
-            workExperienceDb.add(item.workExperienceToDO(user.getEmail()));
+            workExperienceDb.add(item.workExperienceToDO(userEmail));
         }
         workExperienceDb.disconnect();
     }

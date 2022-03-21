@@ -247,7 +247,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return confirmedPassword;
   }
 
-  bool passwordIsValid() {
+  bool isPasswordValid() {
     bool passwordIsAdded = !(password == null || password!.isEmpty);
     bool confirmedPasswordIsAdded = !(confirmedPassword == null || confirmedPassword!.isEmpty);
     return passwordIsAdded && confirmedPasswordIsAdded && password == confirmedPassword;

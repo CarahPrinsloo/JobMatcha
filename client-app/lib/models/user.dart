@@ -3,6 +3,8 @@ import 'package:client_app/models/work_experience.dart';
 
 class User {
   // Basic user info
+  final String email;
+  final String password;
   final String fullName;
   final int age;
   final String image;
@@ -15,6 +17,8 @@ class User {
   final String projectsLink;
 
   const User({
+    required this.email,
+    required this.password,
     required this.fullName,
     required this.age,
     required this.image,

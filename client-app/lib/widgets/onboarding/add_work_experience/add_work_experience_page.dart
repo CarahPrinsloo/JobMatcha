@@ -5,16 +5,24 @@ import 'package:flutter/material.dart';
 import 'work_experience_form_fields.dart';
 
 class AddWorkExperiencePage extends StatefulWidget {
-  const AddWorkExperiencePage({Key? key}) : super(key: key);
+  AddWorkExperiencePageState? state;
+
+  AddWorkExperiencePage({Key? key}) : super(key: key);
 
   @override
-  AddWorkExperiencePageState createState() => AddWorkExperiencePageState();
+  AddWorkExperiencePageState createState() {
+    AddWorkExperiencePageState state = AddWorkExperiencePageState();
+    this.state = state;
+    return state;
+  }
+
+  AddWorkExperiencePageState? getState() {
+    return state;
+  }
 }
 
 class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
   static List<WorkExperience?> workExperienceList = [null];
-
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _controller;
 
   @override
@@ -32,7 +40,6 @@ class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -53,6 +60,10 @@ class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
         ),
       ),
     );
+  }
+
+  List<WorkExperience> getWorkExperience() {
+    return List.from(workExperienceList.where((experience) => experience != null));
   }
 
   List<Widget> _getWorkExperience() {

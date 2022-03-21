@@ -5,16 +5,24 @@ import 'package:flutter/material.dart';
 import 'education_form_fields.dart';
 
 class AddEducationPage extends StatefulWidget {
-  const AddEducationPage({Key? key}) : super(key: key);
+  AddEducationPageState? state;
+
+  AddEducationPage({Key? key}) : super(key: key);
 
   @override
-  AddEducationPageState createState() => AddEducationPageState();
+  AddEducationPageState createState() {
+    AddEducationPageState state = AddEducationPageState();
+    this.state = state;
+    return state;
+  }
+
+  AddEducationPageState? getState() {
+    return state;
+  }
 }
 
 class AddEducationPageState extends State<AddEducationPage> {
   static List<Education?> educationList = [null];
-
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _controller;
 
   @override
@@ -32,7 +40,6 @@ class AddEducationPageState extends State<AddEducationPage> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -55,7 +62,11 @@ class AddEducationPageState extends State<AddEducationPage> {
     );
   }
 
-  List<Widget> _getEducation() {
+  List<Education> getEducation() {
+    return List.from(educationList.where((education) => education != null));
+  }
+
+    List<Widget> _getEducation() {
     List<Widget> educationTextFieldsList = [];
     for (int i = 0; i < educationList.length; i++) {
       educationTextFieldsList.add(Padding(

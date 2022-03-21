@@ -1,25 +1,29 @@
 package domain;
 
+import orm.education.EducationDO;
+
 public class Education {
     private String institution;
-    private String startYear;
-    private String endYear;
+    private String graduationYear;
 
-    public Education(String institution, String startYear, String endYear) {
+    public Education(String institution, String graduationYear) {
         this.institution = institution;
-        this.startYear = startYear;
-        this.endYear = endYear;
+        this.graduationYear = graduationYear;
+    }
+
+    public EducationDO educationToDO(String userEmail) {
+        return new EducationDO(
+                institution,
+                graduationYear,
+                userEmail
+        );
     }
 
     public String getInstitution() {
         return institution;
     }
 
-    public String getStartYear() {
-        return startYear;
-    }
-
-    public String getEndYear() {
-        return endYear;
+    public String getGraduationYear() {
+        return graduationYear;
     }
 }

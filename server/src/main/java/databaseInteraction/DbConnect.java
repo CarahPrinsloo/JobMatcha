@@ -13,8 +13,8 @@ public abstract class DbConnect {
     DbConnect() throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
 
-        this.connection = setConnection();
         setDbUrl();
+        this.connection = setConnection();
     }
 
     private void setDbUrl() {

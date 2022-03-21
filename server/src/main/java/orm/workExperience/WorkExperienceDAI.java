@@ -21,7 +21,7 @@ public interface WorkExperienceDAI extends BaseQuery {
     @Update(
             "INSERT INTO "+
                     "user_experience (business_name, start_year, end_year, user_email) "
-                    + "VALUES (?{1.businessName}, ?{1.startYear}, , ?{1.endYear}, ?{1.userEmail})"
+                    + "VALUES (?{1.businessName}, ?{1.startYear}, ?{1.endYear}, ?{1.userEmail})"
     )
     void addWorkExperience(WorkExperienceDO user);
 

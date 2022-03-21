@@ -22,8 +22,8 @@ public class User {
         this.image = image;
     }
 
-    private User DAOToUser(UserDO userDAO) throws ClassNotFoundException {
-        return new User(
+    public UserDO userToDO() {
+        return new UserDO(
                 fullName,
                 age,
                 email,

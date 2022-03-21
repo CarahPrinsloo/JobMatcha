@@ -34,5 +34,5 @@ public interface WorkExperienceDAI extends BaseQuery {
                     "WHERE user_email = ?{2} "+
                     "AND start_year = ?{3}"
     )
-    void updateEducation(WorkExperienceDO user, String currentEmail, String startYear);
+    void updateWorkExperience(WorkExperienceDO user, String currentEmail, String startYear);
 }

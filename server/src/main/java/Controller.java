@@ -1,3 +1,4 @@
+import databaseInteraction.UserDbConnect;
 import webService.WebApiServer;
 
 import java.sql.SQLException;
@@ -5,11 +6,11 @@ import java.util.Scanner;
 
 public class Controller {
     private static Scanner in;
-    private static DbConnect db;
+    private static UserDbConnect db;
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         in = new Scanner(System.in);
-        db = new DbConnect();
+        db = new UserDbConnect();
 
         WebApiServer server = new WebApiServer();
         server.start(8080);

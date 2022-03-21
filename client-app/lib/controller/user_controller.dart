@@ -1,4 +1,4 @@
-import 'package:client_app/models/http_service.dart';
+import 'package:client_app/models/webService/http_service.dart';
 import 'package:client_app/models/user.dart';
 import 'package:flutter/cupertino.dart';
 

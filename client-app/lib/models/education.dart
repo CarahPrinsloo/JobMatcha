@@ -1,5 +1,3 @@
-import 'date.dart';
-
 class Education {
   String graduationYear;
   String institution;

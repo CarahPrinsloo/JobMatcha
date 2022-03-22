@@ -5,19 +5,19 @@ class GeneralInformationForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final PageController controller;
 
-  _GeneralInformationFormState? _state;
+  GeneralInformationFormState? _state;
 
   GeneralInformationForm({Key? key, required this.controller, required this.formKey}) : super(key: key);
 
   @override
-  _GeneralInformationFormState createState() {
-    _GeneralInformationFormState state = _GeneralInformationFormState(formKey);
+  GeneralInformationFormState createState() {
+    GeneralInformationFormState state = GeneralInformationFormState(formKey);
     this._state = state;
 
     return state;
   }
 
-  _GeneralInformationFormState? getState() {
+  GeneralInformationFormState? getState() {
     return _state;
   }
 
@@ -26,7 +26,7 @@ class GeneralInformationForm extends StatefulWidget {
   }
 }
 
-class _GeneralInformationFormState extends State<GeneralInformationForm> {
+class GeneralInformationFormState extends State<GeneralInformationForm> {
   final GlobalKey<FormState> _formKey;
 
   String? _email;
@@ -36,7 +36,7 @@ class _GeneralInformationFormState extends State<GeneralInformationForm> {
   String? _password;
   String? _confirmedPassword;
 
-  _GeneralInformationFormState(this._formKey);
+  GeneralInformationFormState(this._formKey);
 
   @override
   void initState() {
@@ -270,4 +270,5 @@ class _GeneralInformationFormState extends State<GeneralInformationForm> {
     }
     return true;
   }
+  
 }

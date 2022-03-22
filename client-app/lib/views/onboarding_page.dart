@@ -23,61 +23,61 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  final controller = PageController();
+  final _pageController = PageController();
 
   @override
   void dispose() {
-    controller.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    GeneralInformationForm signUpPage = GeneralInformationForm(
-      controller: controller,
+    GeneralInformationForm generalInfoForm = GeneralInformationForm(
+      controller: _pageController,
       formKey: GlobalKey<FormState>(),
     );
-    AddImageForm imagePage = AddImageForm();
-    LanguageForm addLanguagePage = LanguageForm(
+    AddImageForm addImageForm = AddImageForm();
+    LanguageForm addLanguageForm = LanguageForm(
       formKey: GlobalKey<FormState>(),
     );
-    BioAndLinkForm aboutMePage = BioAndLinkForm(formKey: GlobalKey<FormState>());
-    EducationForm addEducationPage = EducationForm();
-    WorkExperienceForm addWorkExperiencePage = WorkExperienceForm();
+    BioAndLinkForm bioAndLinkForm = BioAndLinkForm(formKey: GlobalKey<FormState>());
+    EducationForm educationForm = EducationForm();
+    WorkExperienceForm workExperienceForm = WorkExperienceForm();
 
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.only(bottom: 80),
         child: PageView(
-          controller: controller,
+          controller: _pageController,
           children: [
-            signUpPage,
-            imagePage,
-            addLanguagePage,
-            addEducationPage,
-            addWorkExperiencePage,
-            aboutMePage,
+            generalInfoForm,
+            addImageForm,
+            addLanguageForm,
+            educationForm,
+            workExperienceForm,
+            bioAndLinkForm,
           ],
         ),
       ),
       bottomSheet: bottomSheet(
-        signUpPage,
-        imagePage,
-        addLanguagePage,
-        aboutMePage,
-        addEducationPage,
-        addWorkExperiencePage,
+        generalInfoForm,
+        addImageForm,
+        addLanguageForm,
+        bioAndLinkForm,
+        educationForm,
+        workExperienceForm,
       ),
     );
   }
 
   Container bottomSheet(
-    GeneralInformationForm signUpPage,
-    AddImageForm imagePage,
-    LanguageForm addLanguagePage,
-    BioAndLinkForm aboutMePage,
-    EducationForm addEducationPage,
-    WorkExperienceForm addWorkExperiencePage,
+    GeneralInformationForm generalInfoForm,
+    AddImageForm addImageForm,
+    LanguageForm languageForm,
+    BioAndLinkForm bioAndLinkForm,
+    EducationForm educationForm,
+    WorkExperienceForm workExperienceForm,
   ) {
     return Container(
       height: 80,
@@ -93,29 +93,29 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: const Text("NEXT"),
             onPressed: () async {
               if (_canRedirectToNextOnboardingPage(
-                  signUpPage, imagePage, addLanguagePage)) {
-                controller.nextPage(
+                  generalInfoForm, addImageForm, languageForm)) {
+                _pageController.nextPage(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeOut,
                 );
-              } else if (_isInvalidPasswordEntry(signUpPage)) {
+              } else if (_isInvalidPasswordEntry(generalInfoForm)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("The password entries do not match."),
                   ),
                 );
-              } else if (_isImageAdded(imagePage)) {
+              } else if (_isImageAdded(addImageForm)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("No image was selected."),
                   ),
                 );
-              } else if (_isComplete(aboutMePage)) {
+              } else if (_isComplete(bioAndLinkForm)) {
                 User user = _createUserFromInformation(
-                  signUpPage,
-                  aboutMePage,
-                  addEducationPage,
-                  addWorkExperiencePage,
+                  generalInfoForm,
+                  bioAndLinkForm,
+                  educationForm,
+                  workExperienceForm,
                 );
 
                 UserController controller = UserController();
@@ -131,30 +131,35 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   SmoothPageIndicator _pageIndicator() {
     return SmoothPageIndicator(
-      controller: controller,
+      controller: _pageController,
       count: 3,
     );
   }
 
   User _createUserFromInformation(
-    GeneralInformationForm signUpPage,
-    BioAndLinkForm aboutMePage,
-    EducationForm addEducationPage,
-    WorkExperienceForm addWorkExperiencePage,
-  ) {
-    String email = signUpPage.getState()!.getEmailAddress()!;
+      GeneralInformationForm generalInfoForm,
+      BioAndLinkForm bioAndLinkForm,
+      EducationForm educationForm,
+      WorkExperienceForm workExperienceForm,
+      ) {
+
+    GeneralInformationFormState genralInfoFormState = generalInfoForm.getState()!;
+    // General user information
+    String email = genralInfoFormState.getEmailAddress()!;
     String password = Encryption.encrypt(
-      signUpPage.getState()!.getPassword()!,
+      genralInfoFormState.getPassword()!,
     )!;
-    String fullName = signUpPage.getState()!.getFullName()!;
-    int age = signUpPage.getState()!.getAge()!;
-    String bio = aboutMePage.getState().getBio() ?? "";
-    String jobTitle = signUpPage.getState()!.getJobTitle() ?? "";
+    String fullName = genralInfoFormState.getFullName()!;
+    int age = genralInfoFormState.getAge()!;
+    String bio = bioAndLinkForm.getState()!.getBio()!;
+
+    // Work related Information
+    String jobTitle = genralInfoFormState.getJobTitle()!;
     List<Education> education =
-        addEducationPage.getState()!.getCopyOfProvidedEducation();
+    educationForm.getState()!.getCopyOfProvidedEducation();
     List<WorkExperience> workExperience =
-        addWorkExperiencePage.getState()!.getCopyOfCompletedWorkExperience();
-    String projectsLink = aboutMePage.getState().getGithubLink()!;
+    workExperienceForm.getState()!.getCopyOfCompletedWorkExperience();
+    String projectsLink = bioAndLinkForm.getState().getGithubLink()!;
 
     User user = User(
       email: email,
@@ -171,37 +176,37 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return user;
   }
 
-  bool _isComplete(BioAndLinkForm aboutMePage) {
-    return controller.page == 5 && _aboutMeDetailsCompleted(aboutMePage);
+  bool _isComplete(BioAndLinkForm bioAndLinkForm) {
+    return _pageController.page == 5 && _bioAndProjectLinkCompleted(bioAndLinkForm);
   }
 
-  bool _isImageAdded(AddImageForm imagePage) {
-    return imagePage.getState() != null &&
-        !imagePage.getState()!.isImageAdded();
+  bool _isImageAdded(AddImageForm addImageForm) {
+    return addImageForm.getState() != null &&
+        !addImageForm.getState()!.isImageAdded();
   }
 
-  bool _isInvalidPasswordEntry(GeneralInformationForm signUpPage) {
-    return controller.page == 0 &&
-        signUpPage.getState()!.getPassword() != null &&
-        signUpPage.getState()!.getConfirmedPassword() != null &&
-        !signUpPage.getState()!.isPasswordValid();
+  bool _isInvalidPasswordEntry(GeneralInformationForm generalInfoForm) {
+    return _pageController.page == 0 &&
+        generalInfoForm.getState()!.getPassword() != null &&
+        generalInfoForm.getState()!.getConfirmedPassword() != null &&
+        !generalInfoForm.getState()!.isPasswordValid();
   }
 
   bool _canRedirectToNextOnboardingPage(
-    GeneralInformationForm signUpPage,
-    AddImageForm imagePage,
-    LanguageForm addLanguagePage,
+    GeneralInformationForm generalInfoForm,
+    AddImageForm addImageForm,
+    LanguageForm languageForm,
   ) {
-    return (controller.page == 0 && _userFormDetailsCompleted(signUpPage)) ||
-        (imagePage.getState() != null &&
-            controller.page == 1 &&
-            imagePage.getState()!.isImageAdded()) ||
-        (addLanguagePage.getState() != null &&
-            controller.page == 2 &&
-            addLanguagePage.getState()!.isAdded()) ||
-        (controller.page != null &&
-            controller.page! > 2 &&
-            controller.page != 5);
+    return (_pageController.page == 0 && _userFormDetailsCompleted(generalInfoForm)) ||
+        (addImageForm.getState() != null &&
+            _pageController.page == 1 &&
+            addImageForm.getState()!.isImageAdded()) ||
+        (languageForm.getState() != null &&
+            _pageController.page == 2 &&
+            languageForm.getState()!.isAdded()) ||
+        (_pageController.page != null &&
+            _pageController.page! > 2 &&
+            _pageController.page != 5);
   }
 
   void _redirectIfOnboardingSuccessful(UserController controller) {
@@ -220,36 +225,36 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
-  bool _userFormDetailsCompleted(GeneralInformationForm signUpPage) {
-    if (!(signUpPage.getKey().currentState!.validate())) {
+  bool _userFormDetailsCompleted(GeneralInformationForm generalInfoForm) {
+    if (!(generalInfoForm.getKey().currentState!.validate())) {
       return false;
     }
-    signUpPage.getKey().currentState!.save();
+    generalInfoForm.getKey().currentState!.save();
 
-    if (signUpPage.getState() == null) {
+    if (generalInfoForm.getState() == null) {
       return false;
     }
 
-    String? fullName = signUpPage.getState()!.getFullName();
-    String? email = signUpPage.getState()!.getEmailAddress();
-    String? jobTitle = signUpPage.getState()!.getJobTitle();
-    int? age = signUpPage.getState()!.getAge();
+    String? fullName = generalInfoForm.getState()!.getFullName();
+    String? email = generalInfoForm.getState()!.getEmailAddress();
+    String? jobTitle = generalInfoForm.getState()!.getJobTitle();
+    int? age = generalInfoForm.getState()!.getAge();
 
     return !(fullName == null || fullName.isEmpty) &&
         !(email == null || email.isEmpty) &&
         !(age == null || (age != null && age <= 0)) &&
         !(jobTitle == null || jobTitle.isEmpty) &&
-        (signUpPage.getState()!.isPasswordValid());
+        (generalInfoForm.getState()!.isPasswordValid());
   }
 
-  bool _aboutMeDetailsCompleted(BioAndLinkForm aboutMePage) {
-    if (!(aboutMePage.getState().getFormKey().currentState!.validate())) {
+  bool _bioAndProjectLinkCompleted(BioAndLinkForm bioAndLinkForm) {
+    if (!(bioAndLinkForm.getState().getFormKey().currentState!.validate())) {
       return false;
     }
-    aboutMePage.getState().getFormKey().currentState!.save();
+    bioAndLinkForm.getState().getFormKey().currentState!.save();
 
-    String? bio = aboutMePage.getState().getBio();
-    String? link = aboutMePage.getState().getGithubLink();
+    String? bio = bioAndLinkForm.getState().getBio();
+    String? link = bioAndLinkForm.getState().getGithubLink();
 
     return !(bio == null || bio.isEmpty) && !(link == null || link.isEmpty);
   }

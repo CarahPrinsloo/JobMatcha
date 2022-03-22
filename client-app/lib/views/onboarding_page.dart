@@ -4,7 +4,7 @@ import 'package:client_app/models/security/encryption.dart';
 import 'package:client_app/models/user.dart';
 import 'package:client_app/models/work_experience.dart';
 import 'package:client_app/widgets/onboarding/about_me_page.dart';
-import 'package:client_app/widgets/onboarding/add_education/add_education_page.dart';
+import 'package:client_app/widgets/onboarding/add_education/education_form.dart';
 import 'package:client_app/widgets/onboarding/add_language/add_language_page.dart';
 import 'package:client_app/widgets/onboarding/add_image_page.dart';
 import 'package:client_app/widgets/onboarding/add_work_experience/add_work_experience_page.dart';
@@ -42,7 +42,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       formKey: GlobalKey<FormState>(),
     );
     AboutMePage aboutMePage = AboutMePage(formKey: GlobalKey<FormState>());
-    AddEducationPage addEducationPage = AddEducationPage();
+    EducationForm addEducationPage = EducationForm();
     AddWorkExperiencePage addWorkExperiencePage = AddWorkExperiencePage();
 
     return Scaffold(
@@ -76,7 +76,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     AddImagePage imagePage,
     AddLanguagePage addLanguagePage,
     AboutMePage aboutMePage,
-    AddEducationPage addEducationPage,
+    EducationForm addEducationPage,
     AddWorkExperiencePage addWorkExperiencePage,
   ) {
     return Container(
@@ -139,7 +139,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   User _createUserFromInformation(
     SignUpPage signUpPage,
     AboutMePage aboutMePage,
-    AddEducationPage addEducationPage,
+    EducationForm addEducationPage,
     AddWorkExperiencePage addWorkExperiencePage,
   ) {
     String email = signUpPage.getState()!.getEmailAddress()!;
@@ -150,7 +150,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     int age = signUpPage.getState()!.getAge()!;
     String bio = aboutMePage.getState().getBio() ?? "";
     String jobTitle = signUpPage.getState()!.getJobTitle() ?? "";
-    List<Education> education = addEducationPage.getState()!.getEducation();
+    List<Education> education = addEducationPage.getState()!.getCopyOfProvidedEducation();
     List<WorkExperience> workExperience =
         addWorkExperiencePage.getState()!.getWorkExperience();
     String projectsLink = aboutMePage.getState().getGithubLink()!;

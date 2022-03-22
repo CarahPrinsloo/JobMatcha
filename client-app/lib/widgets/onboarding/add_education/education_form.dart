@@ -2,38 +2,34 @@ import 'package:client_app/models/education.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'education_form_fields.dart';
+import 'education_text_form_fields.dart';
 
-class AddEducationPage extends StatefulWidget {
-  AddEducationPageState? state;
+class EducationForm extends StatefulWidget  {
+  final EducationFormState _state = EducationFormState();
 
-  AddEducationPage({Key? key}) : super(key: key);
+  EducationForm({Key? key}) : super(key: key);
 
   @override
-  AddEducationPageState createState() {
-    AddEducationPageState state = AddEducationPageState();
-    this.state = state;
-    return state;
-  }
+  EducationFormState createState() => _state;
 
-  AddEducationPageState? getState() {
-    return state;
+  EducationFormState? getState() {
+    return _state;
   }
 }
 
-class AddEducationPageState extends State<AddEducationPage> {
-  static List<Education?> educationList = [null];
-  late TextEditingController _controller;
+class EducationFormState extends State<EducationForm> {
+  final List<Education?> _education = [null];
+  late TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _textController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -52,7 +48,7 @@ class AddEducationPageState extends State<AddEducationPage> {
               'Add Education',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
             ),
-            ..._getEducation(),
+            ..._dynamicEducationFormFields(),
             const SizedBox(
               height: 40,
             ),
@@ -62,22 +58,27 @@ class AddEducationPageState extends State<AddEducationPage> {
     );
   }
 
-  List<Education> getEducation() {
-    return List.from(educationList.where((education) => education != null));
+  List<Education?> getEducation() {
+    return _education;
   }
 
-    List<Widget> _getEducation() {
+  List<Education> getCopyOfProvidedEducation() {
+    return List.from(
+        _education.where((education) => education != null));
+  }
+
+  List<Widget> _dynamicEducationFormFields() {
     List<Widget> educationTextFieldsList = [];
-    for (int i = 0; i < educationList.length; i++) {
+    for (int i = 0; i < _education.length; i++) {
       educationTextFieldsList.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Row(
           children: [
-            Expanded(child: EducationFormFields(i)),
+            Expanded(child: EducationTextFormFields(this)),
             const SizedBox(
               width: 16,
             ),
-            _addRemoveButton(i == educationList.length - 1, i),
+            _addRemoveButton(i == _education.length - 1, i),
           ],
         ),
       ));
@@ -90,9 +91,9 @@ class AddEducationPageState extends State<AddEducationPage> {
       onTap: () {
         if (add) {
           // add new drop down list at the top of all drop down lists
-          educationList.insert(0, null);
+          _education.insert(0, null);
         } else {
-          educationList.removeAt(index);
+          _education.removeAt(index);
         }
         setState(() {});
       },

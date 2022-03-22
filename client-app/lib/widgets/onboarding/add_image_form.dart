@@ -2,25 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddImagePage extends StatefulWidget {
-  _AddImagePageState? state = null;
+class AddImageForm extends StatefulWidget {
+  _AddImageFormState? _state = null;
 
-  AddImagePage({Key? key}) : super(key: key);
+  AddImageForm({Key? key}) : super(key: key);
 
   @override
-  _AddImagePageState createState() {
-    _AddImagePageState state = _AddImagePageState();
-    this.state = state;
+  _AddImageFormState createState() {
+    _AddImageFormState state = _AddImageFormState();
+    this._state = state;
 
     return state;
   }
 
-  _AddImagePageState? getState() {
-    return state;
+  _AddImageFormState? getState() {
+    return _state;
   }
 }
 
-class _AddImagePageState extends State<AddImagePage> {
+class _AddImageFormState extends State<AddImageForm> {
   bool _imageAdded = false;
 
   @override
@@ -38,13 +38,13 @@ class _AddImagePageState extends State<AddImagePage> {
             style: TextStyle(fontSize: 30, color: Colors.deepPurple),
           ),
           SizedBox(height: height * 0.05),
-          addImageIconButton(),
+          _addImageIconButton(),
         ],
       ),
     );
   }
 
-  Padding addImageIconButton() {
+  Padding _addImageIconButton() {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
 

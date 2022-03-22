@@ -3,8 +3,8 @@ import 'package:client_app/models/education.dart';
 import 'package:client_app/models/security/encryption.dart';
 import 'package:client_app/models/user.dart';
 import 'package:client_app/models/work_experience.dart';
-import 'package:client_app/widgets/onboarding/about_me_page.dart';
-import 'package:client_app/widgets/onboarding/add_image_page.dart';
+import 'package:client_app/widgets/onboarding/bio_and_link_form.dart';
+import 'package:client_app/widgets/onboarding/add_image_form.dart';
 import 'package:client_app/widgets/onboarding/education/education_form.dart';
 import 'package:client_app/widgets/onboarding/language/language_form.dart';
 import 'package:client_app/widgets/onboarding/sign_up_page.dart';
@@ -37,7 +37,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       controller: controller,
       formKey: GlobalKey<FormState>(),
     );
-    AddImagePage imagePage = AddImagePage();
+    AddImageForm imagePage = AddImageForm();
     LanguageForm addLanguagePage = LanguageForm(
       formKey: GlobalKey<FormState>(),
     );
@@ -73,7 +73,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Container bottomSheet(
     SignUpPage signUpPage,
-    AddImagePage imagePage,
+    AddImageForm imagePage,
     LanguageForm addLanguagePage,
     BioAndLinkForm aboutMePage,
     EducationForm addEducationPage,
@@ -175,7 +175,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return controller.page == 5 && _aboutMeDetailsCompleted(aboutMePage);
   }
 
-  bool _isImageAdded(AddImagePage imagePage) {
+  bool _isImageAdded(AddImageForm imagePage) {
     return imagePage.getState() != null &&
         !imagePage.getState()!.isImageAdded();
   }
@@ -189,7 +189,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   bool _canRedirectToNextOnboardingPage(
     SignUpPage signUpPage,
-    AddImagePage imagePage,
+    AddImageForm imagePage,
     LanguageForm addLanguagePage,
   ) {
     return (controller.page == 0 && _userFormDetailsCompleted(signUpPage)) ||

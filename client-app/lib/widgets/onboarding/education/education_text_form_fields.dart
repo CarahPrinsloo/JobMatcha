@@ -25,8 +25,8 @@ class _EducationTextFormFieldsState extends State<EducationTextFormFields> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController();
 
+    _textController = TextEditingController();
     _graduationYear = null;
   }
 

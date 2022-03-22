@@ -4,10 +4,10 @@ import 'package:client_app/models/security/encryption.dart';
 import 'package:client_app/models/user.dart';
 import 'package:client_app/models/work_experience.dart';
 import 'package:client_app/widgets/onboarding/about_me_page.dart';
-import 'package:client_app/widgets/onboarding/add_education/education_form.dart';
-import 'package:client_app/widgets/onboarding/add_language/add_language_page.dart';
 import 'package:client_app/widgets/onboarding/add_image_page.dart';
 import 'package:client_app/widgets/onboarding/add_work_experience/add_work_experience_page.dart';
+import 'package:client_app/widgets/onboarding/education/education_form.dart';
+import 'package:client_app/widgets/onboarding/language/language_form.dart';
 import 'package:client_app/widgets/onboarding/sign_up_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       formKey: GlobalKey<FormState>(),
     );
     AddImagePage imagePage = AddImagePage();
-    AddLanguagePage addLanguagePage = AddLanguagePage(
+    LanguageForm addLanguagePage = LanguageForm(
       formKey: GlobalKey<FormState>(),
     );
     AboutMePage aboutMePage = AboutMePage(formKey: GlobalKey<FormState>());
@@ -74,7 +74,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Container bottomSheet(
     SignUpPage signUpPage,
     AddImagePage imagePage,
-    AddLanguagePage addLanguagePage,
+    LanguageForm addLanguagePage,
     AboutMePage aboutMePage,
     EducationForm addEducationPage,
     AddWorkExperiencePage addWorkExperiencePage,
@@ -150,7 +150,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     int age = signUpPage.getState()!.getAge()!;
     String bio = aboutMePage.getState().getBio() ?? "";
     String jobTitle = signUpPage.getState()!.getJobTitle() ?? "";
-    List<Education> education = addEducationPage.getState()!.getCopyOfProvidedEducation();
+    List<Education> education =
+        addEducationPage.getState()!.getCopyOfProvidedEducation();
     List<WorkExperience> workExperience =
         addWorkExperiencePage.getState()!.getWorkExperience();
     String projectsLink = aboutMePage.getState().getGithubLink()!;
@@ -189,7 +190,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   bool _canRedirectToNextOnboardingPage(
     SignUpPage signUpPage,
     AddImagePage imagePage,
-    AddLanguagePage addLanguagePage,
+    LanguageForm addLanguagePage,
   ) {
     return (controller.page == 0 && _userFormDetailsCompleted(signUpPage)) ||
         (imagePage.getState() != null &&

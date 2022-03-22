@@ -7,7 +7,7 @@ import 'package:client_app/widgets/onboarding/bio_and_link_form.dart';
 import 'package:client_app/widgets/onboarding/add_image_form.dart';
 import 'package:client_app/widgets/onboarding/education/education_form.dart';
 import 'package:client_app/widgets/onboarding/language/language_form.dart';
-import 'package:client_app/widgets/onboarding/sign_up_page.dart';
+import 'package:client_app/widgets/onboarding/general_information_form.dart';
 import 'package:client_app/widgets/onboarding/work_experience/work_experience_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    SignUpPage signUpPage = SignUpPage(
+    GeneralInformationForm signUpPage = GeneralInformationForm(
       controller: controller,
       formKey: GlobalKey<FormState>(),
     );
@@ -72,7 +72,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Container bottomSheet(
-    SignUpPage signUpPage,
+    GeneralInformationForm signUpPage,
     AddImageForm imagePage,
     LanguageForm addLanguagePage,
     BioAndLinkForm aboutMePage,
@@ -137,7 +137,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   User _createUserFromInformation(
-    SignUpPage signUpPage,
+    GeneralInformationForm signUpPage,
     BioAndLinkForm aboutMePage,
     EducationForm addEducationPage,
     WorkExperienceForm addWorkExperiencePage,
@@ -180,7 +180,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         !imagePage.getState()!.isImageAdded();
   }
 
-  bool _isInvalidPasswordEntry(SignUpPage signUpPage) {
+  bool _isInvalidPasswordEntry(GeneralInformationForm signUpPage) {
     return controller.page == 0 &&
         signUpPage.getState()!.getPassword() != null &&
         signUpPage.getState()!.getConfirmedPassword() != null &&
@@ -188,7 +188,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   bool _canRedirectToNextOnboardingPage(
-    SignUpPage signUpPage,
+    GeneralInformationForm signUpPage,
     AddImageForm imagePage,
     LanguageForm addLanguagePage,
   ) {
@@ -220,7 +220,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
-  bool _userFormDetailsCompleted(SignUpPage signUpPage) {
+  bool _userFormDetailsCompleted(GeneralInformationForm signUpPage) {
     if (!(signUpPage.getKey().currentState!.validate())) {
       return false;
     }

@@ -41,7 +41,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     LanguageForm addLanguagePage = LanguageForm(
       formKey: GlobalKey<FormState>(),
     );
-    AboutMePage aboutMePage = AboutMePage(formKey: GlobalKey<FormState>());
+    BioAndLinkForm aboutMePage = BioAndLinkForm(formKey: GlobalKey<FormState>());
     EducationForm addEducationPage = EducationForm();
     WorkExperienceForm addWorkExperiencePage = WorkExperienceForm();
 
@@ -75,7 +75,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     SignUpPage signUpPage,
     AddImagePage imagePage,
     LanguageForm addLanguagePage,
-    AboutMePage aboutMePage,
+    BioAndLinkForm aboutMePage,
     EducationForm addEducationPage,
     WorkExperienceForm addWorkExperiencePage,
   ) {
@@ -138,7 +138,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   User _createUserFromInformation(
     SignUpPage signUpPage,
-    AboutMePage aboutMePage,
+    BioAndLinkForm aboutMePage,
     EducationForm addEducationPage,
     WorkExperienceForm addWorkExperiencePage,
   ) {
@@ -171,7 +171,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return user;
   }
 
-  bool _isComplete(AboutMePage aboutMePage) {
+  bool _isComplete(BioAndLinkForm aboutMePage) {
     return controller.page == 5 && _aboutMeDetailsCompleted(aboutMePage);
   }
 
@@ -242,11 +242,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
         (signUpPage.getState()!.isPasswordValid());
   }
 
-  bool _aboutMeDetailsCompleted(AboutMePage aboutMePage) {
-    if (!(aboutMePage.getState().formKey.currentState!.validate())) {
+  bool _aboutMeDetailsCompleted(BioAndLinkForm aboutMePage) {
+    if (!(aboutMePage.getState().getFormKey().currentState!.validate())) {
       return false;
     }
-    aboutMePage.getState().formKey.currentState!.save();
+    aboutMePage.getState().getFormKey().currentState!.save();
 
     String? bio = aboutMePage.getState().getBio();
     String? link = aboutMePage.getState().getGithubLink();

@@ -1,31 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AboutMePage extends StatefulWidget {
+class BioAndLinkForm extends StatefulWidget {
   GlobalKey<FormState> formKey;
-  late _AboutMePageState state;
+  late _BioAndLinkFormState _state;
 
-  AboutMePage({Key? key, required this.formKey}) : super(key: key);
+  BioAndLinkForm({Key? key, required this.formKey}) : super(key: key);
 
   @override
-  _AboutMePageState createState() {
-    _AboutMePageState state = _AboutMePageState(formKey: formKey);
-    this.state = state;
+  _BioAndLinkFormState createState() {
+    _BioAndLinkFormState state = _BioAndLinkFormState(formKey);
+    this._state = state;
+
     return state;
   }
 
-  _AboutMePageState getState() {
-    return state;
+  _BioAndLinkFormState getState() {
+    return _state;
   }
 }
 
-class _AboutMePageState extends State<AboutMePage> {
-  GlobalKey<FormState> formKey;
+class _BioAndLinkFormState extends State<BioAndLinkForm> {
+  GlobalKey<FormState> _formKey;
 
   String? _bio = null;
   String? _linkToGithub = null;
 
-  _AboutMePageState({required this.formKey});
+  _BioAndLinkFormState(this._formKey);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class _AboutMePageState extends State<AboutMePage> {
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 40),
       child: Form(
-        key: formKey,
+        key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -84,5 +85,9 @@ class _AboutMePageState extends State<AboutMePage> {
 
   String? getGithubLink() {
     return _linkToGithub;
+  }
+  
+  GlobalKey<FormState> getFormKey() {
+    return _formKey;
   }
 }

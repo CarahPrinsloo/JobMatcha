@@ -2,38 +2,34 @@ import 'package:client_app/models/work_experience.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'work_experience_form_fields.dart';
+import 'work_experience_text_form_fields.dart';
 
-class AddWorkExperiencePage extends StatefulWidget {
-  AddWorkExperiencePageState? state;
+class WorkExperienceForm extends StatefulWidget {
+  final WorkExperienceFormState _formState = WorkExperienceFormState();
 
-  AddWorkExperiencePage({Key? key}) : super(key: key);
+  WorkExperienceForm({Key? key}) : super(key: key);
 
   @override
-  AddWorkExperiencePageState createState() {
-    AddWorkExperiencePageState state = AddWorkExperiencePageState();
-    this.state = state;
-    return state;
-  }
+  WorkExperienceFormState createState() => _formState;
 
-  AddWorkExperiencePageState? getState() {
-    return state;
+  WorkExperienceFormState? getState() {
+    return _formState;
   }
 }
 
-class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
-  static List<WorkExperience?> workExperienceList = [null];
-  late TextEditingController _controller;
+class WorkExperienceFormState extends State<WorkExperienceForm> {
+  List<WorkExperience?> _workExperience = [null];
+  late TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _textController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -52,7 +48,7 @@ class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
               'Add your work experience',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
             ),
-            ..._getWorkExperience(),
+            ..._dynamicWorkExperienceFormFields(),
             const SizedBox(
               height: 40,
             ),
@@ -62,22 +58,26 @@ class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
     );
   }
 
-  List<WorkExperience> getWorkExperience() {
-    return List.from(workExperienceList.where((experience) => experience != null));
+  List<WorkExperience?> getWorkExperience() {
+    return _workExperience;
   }
 
-  List<Widget> _getWorkExperience() {
+  List<WorkExperience> getCopyOfCompletedWorkExperience() {
+    return List.from(_workExperience.where((experience) => experience != null));
+  }
+
+  List<Widget> _dynamicWorkExperienceFormFields() {
     List<Widget> workExperienceTextFieldsList = [];
-    for (int i = 0; i < workExperienceList.length; i++) {
+    for (int i = 0; i < _workExperience.length; i++) {
       workExperienceTextFieldsList.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Row(
           children: [
-            Expanded(child: WorkExperienceFormFields(i)),
+            Expanded(child: WorkExperienceFormFields(this)),
             const SizedBox(
               width: 16,
             ),
-            _addRemoveButton(i == workExperienceList.length - 1, i),
+            _addRemoveButton(i == _workExperience.length - 1, i),
           ],
         ),
       ));
@@ -89,9 +89,9 @@ class AddWorkExperiencePageState extends State<AddWorkExperiencePage> {
     return InkWell(
       onTap: () {
         if (add) {
-          workExperienceList.insert(0, null);
+          _workExperience.insert(0, null);
         } else {
-          workExperienceList.removeAt(index);
+          _workExperience.removeAt(index);
         }
         setState(() {});
       },

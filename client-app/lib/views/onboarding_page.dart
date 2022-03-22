@@ -5,10 +5,10 @@ import 'package:client_app/models/user.dart';
 import 'package:client_app/models/work_experience.dart';
 import 'package:client_app/widgets/onboarding/about_me_page.dart';
 import 'package:client_app/widgets/onboarding/add_image_page.dart';
-import 'package:client_app/widgets/onboarding/add_work_experience/add_work_experience_page.dart';
 import 'package:client_app/widgets/onboarding/education/education_form.dart';
 import 'package:client_app/widgets/onboarding/language/language_form.dart';
 import 'package:client_app/widgets/onboarding/sign_up_page.dart';
+import 'package:client_app/widgets/onboarding/work_experience/work_experience_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -43,7 +43,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
     AboutMePage aboutMePage = AboutMePage(formKey: GlobalKey<FormState>());
     EducationForm addEducationPage = EducationForm();
-    AddWorkExperiencePage addWorkExperiencePage = AddWorkExperiencePage();
+    WorkExperienceForm addWorkExperiencePage = WorkExperienceForm();
 
     return Scaffold(
       body: Container(
@@ -77,7 +77,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     LanguageForm addLanguagePage,
     AboutMePage aboutMePage,
     EducationForm addEducationPage,
-    AddWorkExperiencePage addWorkExperiencePage,
+    WorkExperienceForm addWorkExperiencePage,
   ) {
     return Container(
       height: 80,
@@ -140,7 +140,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     SignUpPage signUpPage,
     AboutMePage aboutMePage,
     EducationForm addEducationPage,
-    AddWorkExperiencePage addWorkExperiencePage,
+    WorkExperienceForm addWorkExperiencePage,
   ) {
     String email = signUpPage.getState()!.getEmailAddress()!;
     String password = Encryption.encrypt(
@@ -153,7 +153,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     List<Education> education =
         addEducationPage.getState()!.getCopyOfProvidedEducation();
     List<WorkExperience> workExperience =
-        addWorkExperiencePage.getState()!.getWorkExperience();
+        addWorkExperiencePage.getState()!.getCopyOfCompletedWorkExperience();
     String projectsLink = aboutMePage.getState().getGithubLink()!;
 
     User user = User(

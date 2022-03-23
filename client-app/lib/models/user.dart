@@ -37,8 +37,8 @@ class User {
         image = json['image'],
         bio = json['bio'],
         jobTitle = json['jobTitle'],
-        education = json['education'],
-        workExperience = json['workExperience'],
+        education = json['education'].map((education) => Education.fromJson(education)).toList(),
+        workExperience = json['workExperience'].map((workExperience) => WorkExperience.fromJson(workExperience)).toList(),
         projectsLink = json['projectsLink'];
 
   Map<String, dynamic> toJson() {

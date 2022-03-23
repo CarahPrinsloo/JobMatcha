@@ -119,7 +119,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 );
 
                 UserController controller = UserController();
-                await controller.addUser(user, context);
+                await controller.addUser(user);
                 _redirectIfOnboardingSuccessful(controller);
               }
             },

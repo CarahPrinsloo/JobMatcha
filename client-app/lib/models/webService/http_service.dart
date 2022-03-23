@@ -34,4 +34,25 @@ class HttpService {
       closeConnection();
     }
   }
+
+  Future<User?> getUser(String email, String password) async {
+    createConnection();
+
+    try {
+      Response response = await client.get(
+        Uri.parse('http://localhost:8080/user'),
+        body: {
+          'email':email,
+          'password':password,
+        },
+      );
+
+      return User.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      print(e.toString());
+      return null;
+    } finally {
+      closeConnection();
+    }
+  }
 }

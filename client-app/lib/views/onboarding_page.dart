@@ -143,18 +143,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
       WorkExperienceForm workExperienceForm,
       ) {
 
-    GeneralInformationFormState genralInfoFormState = generalInfoForm.getState()!;
+    GeneralInformationFormState generalInfoFormState = generalInfoForm.getState()!;
     // General user information
-    String email = genralInfoFormState.getEmailAddress()!;
+    String email = generalInfoFormState.getEmailAddress()!;
     String password = Encryption.encrypt(
-      genralInfoFormState.getPassword()!,
+      generalInfoFormState.getPassword()!,
     )!;
-    String fullName = genralInfoFormState.getFullName()!;
-    int age = genralInfoFormState.getAge()!;
-    String bio = bioAndLinkForm.getState()!.getBio()!;
+    String fullName = generalInfoFormState.getFullName()!;
+    int age = generalInfoFormState.getAge()!;
+    String bio = bioAndLinkForm.getState().getBio()!;
 
     // Work related Information
-    String jobTitle = genralInfoFormState.getJobTitle()!;
+    String jobTitle = generalInfoFormState.getJobTitle()!;
     List<Education> education =
     educationForm.getState()!.getCopyOfProvidedEducation();
     List<WorkExperience> workExperience =
@@ -211,7 +211,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   void _redirectIfOnboardingSuccessful(UserController controller) {
     if (controller.getIsSuccessfulResponse() != null &&
-        controller.getIsSuccessfulResponse() == true) {
+        controller.getIsSuccessfulResponse()!) {
+      controller.resetIsSuccessfulResponse();
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),

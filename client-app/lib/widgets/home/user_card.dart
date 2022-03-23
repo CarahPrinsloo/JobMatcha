@@ -90,7 +90,7 @@ class UserCard extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage(user.image[0]),
+          image: AssetImage(user.image),
         ),
         borderRadius: BorderRadius.circular(5.0),
         boxShadow: [

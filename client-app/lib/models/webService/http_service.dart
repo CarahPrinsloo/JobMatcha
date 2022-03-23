@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:client_app/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 class HttpService {
   var client;
@@ -21,13 +21,14 @@ class HttpService {
     createConnection();
 
     try {
-      HttpClientResponse response = await client.post(
+      Response response = await client.post(
         Uri.parse('http://localhost:8080/user'),
-        body: jsonEncode(user),
+        body: jsonEncode(user.toJson()),
       );
 
       return response.statusCode == 201;
     } catch (e) {
+      print(e.toString());
       return false;
     } finally {
       closeConnection();

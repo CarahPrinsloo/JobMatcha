@@ -52,7 +52,6 @@ public class WebApiHandler {
 
     public void getUser(Context context) throws ClassNotFoundException, SQLException {
         String emailAddress = context.pathParam("email");
-        System.out.println(emailAddress);
 
         try {
             userDb = new UserDbConnect();

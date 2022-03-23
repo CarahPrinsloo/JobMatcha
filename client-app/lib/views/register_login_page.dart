@@ -14,11 +14,21 @@ class RegisterLoginPage extends StatefulWidget {
 }
 
 class _RegisterLoginPageState extends State<RegisterLoginPage> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+
     return Padding(
         padding: const EdgeInsets.all(10),
         child: ListView(
@@ -27,6 +37,7 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
             _signInTitle(),
             _emailTextField(),
             _passwordTextField(),
+            SizedBox(height: height * 0.05),
             _loginElevatedButton(),
             _signUpRow(context),
           ],
@@ -69,7 +80,7 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
         style: const TextStyle(
           color: Colors.deepPurpleAccent,
         ),
-        controller: nameController,
+        controller: _emailController,
         decoration: const InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.deepPurple, width: 1.1),
@@ -91,7 +102,7 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
           color: Colors.deepPurpleAccent,
         ),
         obscureText: true,
-        controller: passwordController,
+        controller: _passwordController,
         decoration: const InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.deepPurple, width: 1.1),
@@ -128,51 +139,63 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
 
   Row _signUpRow(BuildContext context) {
     return Row(
-            children: <Widget>[
-              const Text('Do not have an account?'),
-              TextButton(
-                child: const Text(
-                  'Sign up',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const OnboardingPage()),
-                  );
-                },
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          );
+      children: <Widget>[
+        const Text('Do not have an account?'),
+        TextButton(
+          child: const Text(
+            'Sign up',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.deepPurple,
+            ),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const OnboardingPage()),
+            );
+          },
+        )
+      ],
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
   }
 
   void _loginUser() async {
     UserController controller = UserController();
 
-    String? password = Encryption.encrypt(passwordController.text);
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty || (_emailController.text.isNotEmpty && !_isValidEmail(_emailController.text))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Required: Fill in your login details."),
+        ),
+      );
+      return;
+    }
+
+    String? password = Encryption.encrypt(_passwordController.text);
     if (password == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Internal server error - try again."),
         ),
       );
-      return ;
+      return;
     }
 
-    User? user = await controller.loginUser(nameController.text);
-    if (!controller.getIsSuccessfulResponse()! || (user != null && user.getPassword() != password)) {
+    User? user = await controller.loginUser(_emailController.text);
+    bool invalidLogin = user == null ||
+        !controller.getIsSuccessfulResponse()! ||
+        (user != null && user.getPassword() != password);
+
+    if (invalidLogin) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Invalid login information."),
         ),
       );
       controller.resetIsSuccessfulResponse();
-      return ;
+      return;
     }
 
     controller.resetIsSuccessfulResponse();
@@ -183,6 +206,11 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
+  }
 
+  bool _isValidEmail(String email) {
+    return RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
   }
 }

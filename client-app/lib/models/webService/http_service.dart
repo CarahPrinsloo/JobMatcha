@@ -35,16 +35,12 @@ class HttpService {
     }
   }
 
-  Future<User?> getUser(String email, String password) async {
+  Future<User?> getUser(String email) async {
     createConnection();
 
     try {
       Response response = await client.get(
-        Uri.parse('http://localhost:8080/user'),
-        body: {
-          'email':email,
-          'password':password,
-        },
+        Uri.parse('http://localhost:8080/user/$email'),
       );
 
       return User.fromJson(jsonDecode(response.body));

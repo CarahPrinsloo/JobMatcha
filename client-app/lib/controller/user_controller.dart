@@ -12,13 +12,14 @@ class UserController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<User?> loginUser(String email, String encryptedPassword) async {
-    User? user = await _httpService.getUser(email, encryptedPassword);
+  Future<User?> loginUser(String email) async {
+    User? user = await _httpService.getUser(email);
     if (user != null) {
       _isSuccessfulResponse = true;
     }
 
     notifyListeners();
+    return user;
   }
 
   void resetIsSuccessfulResponse() {

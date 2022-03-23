@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:client_app/models/education.dart';
 import 'package:client_app/models/work_experience.dart';
 
@@ -35,10 +37,16 @@ class User {
         fullName = json['fullName'],
         age = json['age'],
         image = json['image'],
-        bio = json['bio'],
+        bio = json['biography'],
         jobTitle = json['jobTitle'],
-        education = json['education'].map((education) => Education.fromJson(education)).toList(),
-        workExperience = json['workExperience'].map((workExperience) => WorkExperience.fromJson(workExperience)).toList(),
+        education = (json["education"] as List).map((e) {
+          Map<String, dynamic> educationJson = e as Map<String, dynamic>;
+          return Education.fromJson(educationJson);
+        }).toList(),
+        workExperience = (json["workExperience"] as List).map((e) {
+          Map<String, dynamic> workExperienceJson = e as Map<String, dynamic>;
+          return WorkExperience.fromJson(workExperienceJson);
+        }).toList(),
         projectsLink = json['projectsLink'];
 
   Map<String, dynamic> toJson() {
@@ -72,5 +80,9 @@ class User {
       workExperienceJson.add(workExperienceObj.toJson());
     }
     return workExperienceJson;
+  }
+
+  String? getPassword() {
+    return password;
   }
 }

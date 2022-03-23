@@ -164,8 +164,8 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
       return ;
     }
 
-    User? user = await controller.loginUser(nameController.text, password);
-    if (!controller.getIsSuccessfulResponse()!) {
+    User? user = await controller.loginUser(nameController.text);
+    if (!controller.getIsSuccessfulResponse()! || (user != null && user.getPassword() != password)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Invalid login information."),

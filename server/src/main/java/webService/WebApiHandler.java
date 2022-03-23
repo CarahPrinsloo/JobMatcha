@@ -8,11 +8,16 @@ import domain.Education;
 import domain.User;
 import domain.WorkExperience;
 import io.javalin.http.Context;
+import net.lemnik.eodsql.EoDException;
+import orm.education.EducationDO;
+import orm.user.UserDO;
+import orm.workExperience.WorkExperienceDO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class WebApiHandler {
     private static UserDbConnect userDb;
@@ -40,14 +45,54 @@ public class WebApiHandler {
             addEducationToDb(user.getEmail(), education);
 
             context.status(201);
-            return ;
+            return;
+        }
+        context.status(400);
+    }
+
+    public void getUser(Context context) throws ClassNotFoundException, SQLException {
+        String emailAddress = context.pathParam("email");
+        System.out.println(emailAddress);
+
+        try {
+            userDb = new UserDbConnect();
+            UserDO userDO = userDb.get(emailAddress);
+            userDb.disconnect();
+
+            if (userDO != null) {
+                workExperienceDb = new WorkExperienceDbConnect();
+                List<WorkExperienceDO> workExperience = workExperienceDb.get(emailAddress);
+                workExperienceDb.disconnect();
+
+                educationDb = new EducationDbConnect();
+                List<EducationDO> education = educationDb.get(emailAddress);
+                educationDb.disconnect();
+
+                context.json(
+                        Map.of(
+                                "fullName", userDO.getFullName(),
+                                "age", userDO.getAge(),
+                                "email", userDO.getEmail(),
+                                "password", userDO.getPassword(),
+                                "jobTitle", userDO.getJobTitle(),
+                                "biography", userDO.getBiography(),
+                                "image", userDO.getImage(),
+                                "education", education,
+                                "workExperience", workExperience
+                        )
+                );
+                context.status(200);
+                return ;
+            }
+        } catch (EoDException ignore) {
+            ignore.printStackTrace();
         }
         context.status(400);
     }
 
     private void addEducationToDb(String userEmail, List<Education> education) throws ClassNotFoundException, SQLException {
         educationDb = new EducationDbConnect();
-        for(Education item : education) {
+        for (Education item : education) {
             educationDb.add(item.educationToDO(userEmail));
         }
         educationDb.disconnect();
@@ -55,7 +100,7 @@ public class WebApiHandler {
 
     private void addWorkExperienceToDb(String userEmail, List<WorkExperience> workExperience) throws ClassNotFoundException, SQLException {
         workExperienceDb = new WorkExperienceDbConnect();
-        for(WorkExperience item : workExperience) {
+        for (WorkExperience item : workExperience) {
             workExperienceDb.add(item.workExperienceToDO(userEmail));
         }
         workExperienceDb.disconnect();

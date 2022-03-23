@@ -14,7 +14,7 @@ public interface WorkExperienceDAI extends BaseQuery {
 
     @Select(
             "SELECT * FROM user_experience w "
-                    + "WHERE w.email = ?{1}"
+                    + "WHERE w.user_email = ?{1}"
     )
     List<WorkExperienceDO> getWorkExperience(String email);
 

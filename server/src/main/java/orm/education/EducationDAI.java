@@ -14,7 +14,7 @@ public interface EducationDAI extends BaseQuery {
 
     @Select(
             "SELECT * FROM user_education e "
-                    + "WHERE e.email = ?{1}"
+                    + "WHERE e.user_email = ?{1}"
     )
     List<EducationDO> getEducation(String email);
 

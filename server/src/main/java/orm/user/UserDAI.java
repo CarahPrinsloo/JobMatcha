@@ -14,7 +14,7 @@ public interface UserDAI extends BaseQuery {
 
     @Select(
             "SELECT * FROM users u "
-                    + "WHERE u.email = ?{1}"
+                    + "WHERE u.user_email = ?{1}"
     )
     UserDO getUser(String email);
 

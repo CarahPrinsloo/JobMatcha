@@ -7,7 +7,7 @@ import 'package:pointycastle/block/modes/cbc.dart';
 import 'package:pointycastle/padded_block_cipher/padded_block_cipher_impl.dart';
 import 'package:pointycastle/paddings/pkcs7.dart';
 
-class Encryption {
+class Decryption {
   static final Uint8List _key = Uint8List.fromList(<int>[
     0x5a,
     0x22,
@@ -64,20 +64,16 @@ class Encryption {
     ],
   );
 
-  static String? encrypt(String? text) {
-    if (text == null) return null;
-    List<int> temp = utf8.encode(text);
-    Uint8List bytes = Uint8List.fromList(temp);
-
-    Uint8List? unit8 = _encryptList(bytes);
+  static String? decrypt(String data) {
+    Uint8List? unit8 = decryptList(base64Decode(data));
     if (unit8 == null) {
       return null;
     }
 
-    return base64Encode(unit8);
+    return utf8.decode(unit8);
   }
 
-  static Uint8List? _encryptList(Uint8List data) {
+  static Uint8List? decryptList(Uint8List data) {
     final CBCBlockCipher cbcCipher = CBCBlockCipher(AESFastEngine());
     final ParametersWithIV<KeyParameter> ivParams =
     ParametersWithIV<KeyParameter>(KeyParameter(_key), _iv);
@@ -85,10 +81,9 @@ class Encryption {
     paddingParams =
     PaddedBlockCipherParameters<ParametersWithIV<KeyParameter>, Null>(
         ivParams, null);
-
     final PaddedBlockCipherImpl paddedCipher =
     PaddedBlockCipherImpl(PKCS7Padding(), cbcCipher);
-    paddedCipher.init(true, paddingParams);
+    paddedCipher.init(false, paddingParams);
 
     try {
       return paddedCipher.process(data);
@@ -97,4 +92,5 @@ class Encryption {
       return null;
     }
   }
+
 }

@@ -1,8 +1,11 @@
 package databaseInteraction;
 
+import net.lemnik.eodsql.EoDException;
 import net.lemnik.eodsql.QueryTool;
 import orm.user.UserDAI;
 import orm.user.UserDO;
+
+import java.util.List;
 
 public class UserDbConnect extends DbConnect {
     private final UserDAI userQuery;
@@ -36,5 +39,14 @@ public class UserDbConnect extends DbConnect {
      */
     public void update(UserDO user, String currentUserEmail) {
         userQuery.updateUser(user, currentUserEmail);
+    }
+
+    public List<UserDO> getAll() {
+        try {
+            return userQuery.getAllUsers();
+        } catch (EoDException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

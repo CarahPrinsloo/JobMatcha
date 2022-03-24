@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:client_app/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +92,9 @@ class UserCard extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage(user.image),
+          image: Image.network(
+            'https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png',
+          ).image,
         ),
         borderRadius: BorderRadius.circular(5.0),
         boxShadow: [

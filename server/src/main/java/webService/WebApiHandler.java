@@ -13,11 +13,13 @@ import orm.education.EducationDO;
 import orm.user.UserDO;
 import orm.workExperience.WorkExperienceDO;
 
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class WebApiHandler {
     private static UserDbConnect userDb;
@@ -40,12 +42,14 @@ public class WebApiHandler {
         List<Education> education = getEducationFromRequest(requestBody);
 
         if (workExperience != null && education != null) {
-            addUserToDb(user);
-            addWorkExperienceToDb(user.getEmail(), workExperience);
-            addEducationToDb(user.getEmail(), education);
+            try {
+                addUserToDb(user);
+                addWorkExperienceToDb(user.getEmail(), workExperience);
+                addEducationToDb(user.getEmail(), education);
 
-            context.status(201);
-            return;
+                context.status(201);
+                return;
+            } catch (EoDException ignore) {}
         }
         context.status(400);
     }
@@ -76,8 +80,8 @@ public class WebApiHandler {
                                 "jobTitle", userDO.getJobTitle(),
                                 "biography", userDO.getBiography(),
                                 "image", userDO.getImage(),
-                                "education", education,
-                                "workExperience", workExperience
+                                "education", (education == null) ? new ArrayList<>() : education,
+                                "workExperience", (workExperience == null) ? new ArrayList<>() : workExperience
                         )
                 );
                 context.status(200);
@@ -87,6 +91,44 @@ public class WebApiHandler {
             ignore.printStackTrace();
         }
         context.status(400);
+    }
+
+    public void getAllUsers(Context context) throws ClassNotFoundException, SQLException {
+        userDb = new UserDbConnect();
+        List<UserDO> users = userDb.getAll();
+        userDb.disconnect();
+
+        if (users == null) {
+            context.status(500);
+            return ;
+        }
+
+        List<Map<String, Object>> allUsers = new ArrayList<>();
+        for (UserDO user: users) {
+            educationDb = new EducationDbConnect();
+            List<EducationDO> education = educationDb.get(user.getEmail());
+            educationDb.disconnect();
+
+            workExperienceDb = new WorkExperienceDbConnect();
+            List<WorkExperienceDO> workExperience = workExperienceDb.get(user.getEmail());
+            workExperienceDb.disconnect();
+
+            allUsers.add(
+                    Map.of(
+                            "fullName", user.getFullName(),
+                            "age", user.getAge(),
+                            "email", user.getEmail(),
+                            "password", user.getPassword(),
+                            "jobTitle", user.getJobTitle(),
+                            "biography", user.getBiography(),
+                            "image", user.getImage(),
+                            "education", (education == null) ? new ArrayList<>() : education,
+                            "workExperience", (workExperience == null) ? new ArrayList<>() : workExperience
+                    )
+            );
+        }
+        context.json(allUsers);
+        context.status(200);
     }
 
     private void addEducationToDb(String userEmail, List<Education> education) throws ClassNotFoundException, SQLException {

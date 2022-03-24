@@ -13,6 +13,7 @@ public class WebApiServer {
 
         this.server.post("/user", context -> apiHandler.addUser(context));
         this.server.get("/user/{email}", context -> apiHandler.getUser(context));
+        this.server.get("/users", context -> apiHandler.getAllUsers(context));
     }
 
     public void start(int port) {

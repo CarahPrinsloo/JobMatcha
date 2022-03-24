@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:client_app/controller/user_controller.dart';
 import 'package:client_app/models/education.dart';
 import 'package:client_app/models/security/encryption.dart';
@@ -111,16 +113,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
                 );
               } else if (_isComplete(bioAndLinkForm)) {
-                User user = _createUserFromInformation(
+                User? user = _createUserFromInformation(
                   generalInfoForm,
                   bioAndLinkForm,
                   educationForm,
                   workExperienceForm,
+                  addImageForm,
                 );
+
+                if (user == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("No image was selected."),
+                    ),
+                  );
+                  return;
+                }
 
                 UserController controller = UserController();
                 await controller.addUser(user);
-                _redirectIfOnboardingSuccessful(controller);
+                _redirectIfOnboardingSuccessful(controller, user);
               }
             },
           ),
@@ -136,11 +148,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  User _createUserFromInformation(
+  User? _createUserFromInformation(
       GeneralInformationForm generalInfoForm,
       BioAndLinkForm bioAndLinkForm,
       EducationForm educationForm,
       WorkExperienceForm workExperienceForm,
+      AddImageForm addImageForm,
       ) {
 
     GeneralInformationFormState generalInfoFormState = generalInfoForm.getState()!;
@@ -151,6 +164,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     )!;
     String fullName = generalInfoFormState.getFullName()!;
     int age = generalInfoFormState.getAge()!;
+    String? image = addImageForm.getState()!.getImageFilePath()!;
     String bio = bioAndLinkForm.getState().getBio()!;
 
     // Work related Information
@@ -161,12 +175,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
     workExperienceForm.getState()!.getCopyOfCompletedWorkExperience();
     String projectsLink = bioAndLinkForm.getState().getGithubLink()!;
 
+    if (image == null) {
+      return null;
+    }
+
     User user = User(
       email: email,
       password: password,
       fullName: fullName,
       age: age,
-      image: "",
+      image: image,
       bio: bio,
       jobTitle: jobTitle,
       education: education,
@@ -209,14 +227,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             _pageController.page != 5);
   }
 
-  void _redirectIfOnboardingSuccessful(UserController controller) {
+  void _redirectIfOnboardingSuccessful(UserController controller, User user) {
     if (controller.getIsSuccessfulResponse() != null &&
         controller.getIsSuccessfulResponse()!) {
       controller.resetIsSuccessfulResponse();
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => HomePage(user: user)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

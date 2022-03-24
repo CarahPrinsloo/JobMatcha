@@ -51,4 +51,34 @@ class HttpService {
       closeConnection();
     }
   }
+
+  Future<List<User>?> getAllUsers() async {
+    createConnection();
+
+    try {
+      Response response = await client.get(
+        Uri.parse('http://localhost:8080/users'),
+      );
+
+      return _convertResponseToUserCollection(response);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    } finally {
+      closeConnection();
+    }
+  }
+
+  List<User>? _convertResponseToUserCollection(Response response) {
+    List<User> users = [];
+
+    try {
+      return List<User>.from(
+          (json.decode(response.body)).map((model) => User.fromJson(model)));
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+    return users;
+  }
 }

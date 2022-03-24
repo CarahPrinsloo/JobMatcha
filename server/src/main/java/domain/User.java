@@ -2,6 +2,8 @@ package domain;
 
 import orm.user.UserDO;
 
+import java.sql.Blob;
+
 public class User {
     public String fullName;
     public int age;

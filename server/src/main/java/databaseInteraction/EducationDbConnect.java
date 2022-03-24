@@ -1,8 +1,10 @@
 package databaseInteraction;
 
+import net.lemnik.eodsql.EoDException;
 import net.lemnik.eodsql.QueryTool;
 import orm.education.EducationDAI;
 import orm.education.EducationDO;
+import orm.user.UserDO;
 
 import java.util.List;
 
@@ -19,7 +21,11 @@ public class EducationDbConnect extends DbConnect {
      * @return a List of EducationDO
      */
     public List<EducationDO> get(String email) {
-        return educationQuery.getEducation(email);
+        try {
+            return educationQuery.getEducation(email);
+        } catch (EoDException e) {
+            return null;
+        }
     }
 
     /**
@@ -38,5 +44,14 @@ public class EducationDbConnect extends DbConnect {
      */
     public void update(EducationDO education, String currentUserEmail, String graduationYear) {
         educationQuery.updateEducation(education, currentUserEmail, graduationYear);
+    }
+
+    public List<EducationDO> getAll() {
+        try {
+            return educationQuery.getAllUserEducation();
+        } catch (EoDException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

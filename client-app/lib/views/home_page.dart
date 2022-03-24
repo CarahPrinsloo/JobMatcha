@@ -1,3 +1,6 @@
+import 'dart:html';
+
+import 'package:client_app/controller/user_controller.dart';
 import 'package:client_app/models/user.dart';
 import 'package:client_app/widgets/home/choice_button.dart';
 import 'package:client_app/widgets/home/custom_appbar.dart';
@@ -5,61 +8,60 @@ import 'package:client_app/widgets/home/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:loading_animations/loading_animations.dart';
+import 'package:provider/provider.dart';
+
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  User user;
+
+  HomePage({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _HomePageState();
+  State<StatefulWidget> createState() => _HomePageState(user);
 }
 
 class _HomePageState extends State<HomePage> {
-  List<User> users = [
-    const User(
-      email: "ca@gmail.com",
-      password: "food",
-      fullName: "Jules Biden",
-      age: 32,
-      image: "images/girls/img_1.jpeg",
-      bio: "Live Love Laugh",
-      jobTitle: "Software Developer",
-      education: [],
-      workExperience: [],
-      projectsLink: "",
-    ),
-    const User(
-      email: "c@gmail.com",
-      password: "donuts",
-      fullName: "Jake Biden",
-      age: 22,
-      image: "images/girls/img_2.jpeg",
-      bio: "This is my bio",
-      jobTitle: "Full Stack Software Developer",
-      education: [],
-      workExperience: [],
-      projectsLink: "",
-    )
-  ];
+  User _user;
+
+  _HomePageState(this._user);
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<UserController>(context, listen: false).populateUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
+    UserController controller = Provider.of<UserController>(context);
+
     return Scaffold(
       appBar: const CustomAppBar(),
-      body: Column(
-        children: [
-          Draggable(
-            child: UserCard(user: users[0]),
-            feedback: UserCard(user: users[0]),
-            childWhenDragging: UserCard(user: users[1]),
-            onDragEnd: (drag) {
-              if (drag.velocity.pixelsPerSecond.dx < 0) {
-                print('Swiped left');
-              } else {
-                print('Swiped right');
-              }
-            },
-          ),
-        ],
-      ),
+      body: (controller.getIsSuccessfulResponse() != null &&
+              controller.users.isNotEmpty)
+          ? body(controller)
+          : LoadingFlipping.circle(
+              borderColor: Colors.indigo,
+            ),
+    );
+  }
+
+  Column body(UserController controller) {
+    return Column(
+      children: [
+        Draggable(
+          child: UserCard(user: controller.users[0]),
+          feedback: UserCard(user: controller.users[0]),
+          childWhenDragging: UserCard(user: controller.users[1]),
+          onDragEnd: (drag) {
+            if (drag.velocity.pixelsPerSecond.dx < 0) {
+              print('Swiped left');
+            } else {
+              print('Swiped right');
+            }
+          },
+        ),
+      ],
     );
   }
 

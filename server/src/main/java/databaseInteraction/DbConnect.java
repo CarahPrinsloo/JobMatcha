@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public abstract class DbConnect {
     private Connection connection;
-    private final String userDbFilename = System.getProperty("user.dir") + "/database/users_db.sqlite";
+    private final String userDbFilename = System.getProperty("user.dir") + "/database/user_db.sqlite";
     private String dbUrl;
 
     DbConnect() throws ClassNotFoundException {

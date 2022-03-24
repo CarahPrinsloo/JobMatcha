@@ -183,7 +183,7 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
       return;
     }
 
-    User? user = await controller.loginUser(_emailController.text);
+    User? user = await controller.getUser(_emailController.text);
     bool invalidLogin = user == null ||
         !controller.getIsSuccessfulResponse()! ||
         (user != null && user.getPassword() != password);
@@ -199,13 +199,10 @@ class _RegisterLoginPageState extends State<RegisterLoginPage> {
     }
 
     controller.resetIsSuccessfulResponse();
-    //TODO: add user as field in HomePage constructor
-    if (user != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(user: user)),
+    );
   }
 
   bool _isValidEmail(String email) {

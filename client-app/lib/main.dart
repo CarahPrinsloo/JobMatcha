@@ -1,4 +1,3 @@
-import 'package:client_app/views/onboarding_page.dart';
 import 'package:client_app/views/register_login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

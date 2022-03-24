@@ -2,6 +2,8 @@ package orm.user;
 
 import net.lemnik.eodsql.ResultColumn;
 
+import java.sql.Blob;
+
 public class UserDO {
     @ResultColumn(value = "user_id")
     public int id;

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:client_app/models/education.dart';
 import 'package:client_app/models/work_experience.dart';
 
@@ -18,18 +16,17 @@ class User {
   final List<WorkExperience> workExperience;
   final String projectsLink;
 
-  const User({
-    required this.email,
-    required this.password,
-    required this.fullName,
-    required this.age,
-    required this.image,
-    required this.bio,
-    required this.jobTitle,
-    required this.education,
-    required this.workExperience,
-    required this.projectsLink
-  });
+  User(
+      {required this.email,
+      required this.password,
+      required this.fullName,
+      required this.age,
+      required this.image,
+      required this.bio,
+      required this.jobTitle,
+      required this.education,
+      required this.workExperience,
+      required this.projectsLink});
 
   User.fromJson(Map<String, dynamic> json)
       : email = json['email'],
@@ -60,22 +57,32 @@ class User {
       'jobTitle': jobTitle,
       'education': _createEducationJson(education),
       'workExperience': _createWorkExperienceJson(workExperience),
-      'projectsLink':projectsLink,
+      'projectsLink': projectsLink,
     };
   }
 
-  List<Object?> get props => [fullName, age, image, bio, jobTitle, education, workExperience, projectsLink];
+  List<Object?> get props => [
+        fullName,
+        age,
+        image,
+        bio,
+        jobTitle,
+        education,
+        workExperience,
+        projectsLink
+      ];
 
-  List<Map <String, dynamic>> _createEducationJson(List<Education> education) {
-    List<Map <String, dynamic>> educationJson = [];
+  List<Map<String, dynamic>> _createEducationJson(List<Education> education) {
+    List<Map<String, dynamic>> educationJson = [];
     for (Education educationObj in education) {
       educationJson.add(educationObj.toJson());
     }
     return educationJson;
   }
 
-  List<Map <String, dynamic>> _createWorkExperienceJson(List<WorkExperience> workExperience) {
-    List<Map <String, dynamic>> workExperienceJson = [];
+  List<Map<String, dynamic>> _createWorkExperienceJson(
+      List<WorkExperience> workExperience) {
+    List<Map<String, dynamic>> workExperienceJson = [];
     for (WorkExperience workExperienceObj in workExperience) {
       workExperienceJson.add(workExperienceObj.toJson());
     }

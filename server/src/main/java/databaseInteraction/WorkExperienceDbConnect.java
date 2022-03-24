@@ -1,6 +1,8 @@
 package databaseInteraction;
 
+import net.lemnik.eodsql.EoDException;
 import net.lemnik.eodsql.QueryTool;
+import orm.user.UserDO;
 import orm.workExperience.WorkExperienceDAI;
 import orm.workExperience.WorkExperienceDO;
 
@@ -19,7 +21,11 @@ public class WorkExperienceDbConnect extends DbConnect {
      * @return a List of UserDO
      */
     public List<WorkExperienceDO> get(String email) {
-        return workExperienceQuery.getWorkExperience(email);
+        try {
+            return workExperienceQuery.getWorkExperience(email);
+        } catch (EoDException e) {
+            return null;
+        }
     }
 
     /**
@@ -38,5 +44,14 @@ public class WorkExperienceDbConnect extends DbConnect {
      */
     public void update(WorkExperienceDO workExperience, String currentUserEmail, String startYear) {
         workExperienceQuery.updateWorkExperience(workExperience, currentUserEmail, startYear);
+    }
+
+    public List<WorkExperienceDO> getAll() {
+        try {
+            return workExperienceQuery.getAllUserWorkExperience();
+        } catch (EoDException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

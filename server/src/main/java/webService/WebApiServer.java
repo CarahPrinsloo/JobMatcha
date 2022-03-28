@@ -16,6 +16,18 @@ public class WebApiServer {
         this.server.get("/users", context -> apiHandler.getAllUsers(context));
     }
 
+    public WebApiServer(String databaseFileName) {
+        server = Javalin.create(config -> {
+            config.defaultContentType = "application/json";
+        });
+        WebApiHandler apiHandler = new WebApiHandler();
+        apiHandler.setDatabaseFileName(databaseFileName);
+
+        this.server.post("/user", context -> apiHandler.addUser(context));
+        this.server.get("/user/{email}", context -> apiHandler.getUser(context));
+        this.server.get("/users", context -> apiHandler.getAllUsers(context));
+    }
+
     public void start(int port) {
         this.server.start(port);
     }

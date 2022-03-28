@@ -2,7 +2,6 @@ package databaseInteraction;
 
 import net.lemnik.eodsql.EoDException;
 import net.lemnik.eodsql.QueryTool;
-import orm.user.UserDO;
 import orm.workExperience.WorkExperienceDAI;
 import orm.workExperience.WorkExperienceDO;
 
@@ -11,7 +10,8 @@ import java.util.List;
 public class WorkExperienceDbConnect extends DbConnect {
     private final WorkExperienceDAI workExperienceQuery;
 
-    public WorkExperienceDbConnect() throws ClassNotFoundException {
+    public WorkExperienceDbConnect(String databaseFilename) throws ClassNotFoundException {
+        super(databaseFilename);
         workExperienceQuery = QueryTool.getQuery(this.getConnection(), WorkExperienceDAI.class);
     }
 
@@ -53,5 +53,11 @@ public class WorkExperienceDbConnect extends DbConnect {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void deleteAll() {
+        try {
+            workExperienceQuery.deleteAll();
+        } catch (EoDException ignore) {}
     }
 }

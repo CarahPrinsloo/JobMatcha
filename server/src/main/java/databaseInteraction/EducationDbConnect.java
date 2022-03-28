@@ -11,7 +11,8 @@ import java.util.List;
 public class EducationDbConnect extends DbConnect {
     private final EducationDAI educationQuery;
 
-    public EducationDbConnect() throws ClassNotFoundException {
+    public EducationDbConnect(String databaseFilename) throws ClassNotFoundException {
+        super(databaseFilename);
         educationQuery = QueryTool.getQuery(this.getConnection(), EducationDAI.class);
     }
 
@@ -53,5 +54,11 @@ public class EducationDbConnect extends DbConnect {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void deleteAll() {
+        try {
+            educationQuery.deleteAll();
+        } catch (EoDException ignore) {}
     }
 }

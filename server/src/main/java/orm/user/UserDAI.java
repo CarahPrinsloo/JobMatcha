@@ -37,4 +37,7 @@ public interface UserDAI extends BaseQuery {
                     "WHERE user_email = ?{2}"
     )
     void updateUser(UserDO user, String currentEmail);
+
+    @Update("DELETE FROM users")
+    void deleteAll();
 }

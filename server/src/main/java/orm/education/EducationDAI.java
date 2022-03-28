@@ -34,4 +34,7 @@ public interface EducationDAI extends BaseQuery {
                     "AND graduation_year = ?{3}"
     )
     void updateEducation(EducationDO user, String currentEmail, String graduationYear);
+
+    @Update("DELETE FROM user_education")
+    void deleteAll();
 }

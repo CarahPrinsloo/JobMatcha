@@ -10,7 +10,8 @@ import java.util.List;
 public class UserDbConnect extends DbConnect {
     private final UserDAI userQuery;
 
-    public UserDbConnect() throws ClassNotFoundException {
+    public UserDbConnect(String databaseFilename) throws ClassNotFoundException {
+        super(databaseFilename);
         userQuery = QueryTool.getQuery(this.getConnection(), UserDAI.class);
     }
 
@@ -48,5 +49,11 @@ public class UserDbConnect extends DbConnect {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void deleteAll() {
+        try {
+            userQuery.deleteAll();
+        } catch (EoDException ignore) {}
     }
 }

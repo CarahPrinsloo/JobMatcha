@@ -35,4 +35,7 @@ public interface WorkExperienceDAI extends BaseQuery {
                     "AND start_year = ?{3}"
     )
     void updateWorkExperience(WorkExperienceDO user, String currentEmail, String startYear);
+
+    @Update("DELETE FROM user_experience")
+    void deleteAll();
 }

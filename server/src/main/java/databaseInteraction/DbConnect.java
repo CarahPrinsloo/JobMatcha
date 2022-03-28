@@ -7,12 +7,13 @@ import java.sql.SQLException;
 
 public abstract class DbConnect {
     private Connection connection;
-    private final String userDbFilename = System.getProperty("user.dir") + "/database/user_db.sqlite";
+    private String userDbFilename;
     private String dbUrl;
 
-    DbConnect() throws ClassNotFoundException {
+    DbConnect(String databaseFileName) throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
 
+        userDbFilename = System.getProperty("user.dir") + databaseFileName;
         setDbUrl();
         this.connection = setConnection();
     }

@@ -13,18 +13,18 @@ import orm.education.EducationDO;
 import orm.user.UserDO;
 import orm.workExperience.WorkExperienceDO;
 
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class WebApiHandler {
     private static UserDbConnect userDb;
     private static WorkExperienceDbConnect workExperienceDb;
     private static EducationDbConnect educationDb;
+
+    private static String databaseFileName = "/database/user_db.sqlite";
 
     public void addUser(Context context) throws ClassNotFoundException, SQLException {
         JsonNode requestBody = context.bodyAsClass(JsonNode.class);
@@ -43,9 +43,9 @@ public class WebApiHandler {
 
         if (workExperience != null && education != null) {
             try {
-                addUserToDb(user);
-                addWorkExperienceToDb(user.getEmail(), workExperience);
-                addEducationToDb(user.getEmail(), education);
+                addUserToDb(user, databaseFileName);
+                addWorkExperienceToDb(user.getEmail(), workExperience, databaseFileName);
+                addEducationToDb(user.getEmail(), education, databaseFileName);
 
                 context.status(201);
                 return;
@@ -58,16 +58,16 @@ public class WebApiHandler {
         String emailAddress = context.pathParam("email");
 
         try {
-            userDb = new UserDbConnect();
+            userDb = new UserDbConnect(databaseFileName);
             UserDO userDO = userDb.get(emailAddress);
             userDb.disconnect();
 
             if (userDO != null) {
-                workExperienceDb = new WorkExperienceDbConnect();
+                workExperienceDb = new WorkExperienceDbConnect(databaseFileName);
                 List<WorkExperienceDO> workExperience = workExperienceDb.get(emailAddress);
                 workExperienceDb.disconnect();
 
-                educationDb = new EducationDbConnect();
+                educationDb = new EducationDbConnect(databaseFileName);
                 List<EducationDO> education = educationDb.get(emailAddress);
                 educationDb.disconnect();
 
@@ -94,7 +94,7 @@ public class WebApiHandler {
     }
 
     public void getAllUsers(Context context) throws ClassNotFoundException, SQLException {
-        userDb = new UserDbConnect();
+        userDb = new UserDbConnect(databaseFileName);
         List<UserDO> users = userDb.getAll();
         userDb.disconnect();
 
@@ -105,11 +105,11 @@ public class WebApiHandler {
 
         List<Map<String, Object>> allUsers = new ArrayList<>();
         for (UserDO user: users) {
-            educationDb = new EducationDbConnect();
+            educationDb = new EducationDbConnect(databaseFileName);
             List<EducationDO> education = educationDb.get(user.getEmail());
             educationDb.disconnect();
 
-            workExperienceDb = new WorkExperienceDbConnect();
+            workExperienceDb = new WorkExperienceDbConnect(databaseFileName);
             List<WorkExperienceDO> workExperience = workExperienceDb.get(user.getEmail());
             workExperienceDb.disconnect();
 
@@ -131,24 +131,24 @@ public class WebApiHandler {
         context.status(200);
     }
 
-    private void addEducationToDb(String userEmail, List<Education> education) throws ClassNotFoundException, SQLException {
-        educationDb = new EducationDbConnect();
+    private void addEducationToDb(String userEmail, List<Education> education, String databaseFileName) throws ClassNotFoundException, SQLException {
+        educationDb = new EducationDbConnect(databaseFileName);
         for (Education item : education) {
             educationDb.add(item.educationToDO(userEmail));
         }
         educationDb.disconnect();
     }
 
-    private void addWorkExperienceToDb(String userEmail, List<WorkExperience> workExperience) throws ClassNotFoundException, SQLException {
-        workExperienceDb = new WorkExperienceDbConnect();
+    private void addWorkExperienceToDb(String userEmail, List<WorkExperience> workExperience, String databaseFileName) throws ClassNotFoundException, SQLException {
+        workExperienceDb = new WorkExperienceDbConnect(databaseFileName);
         for (WorkExperience item : workExperience) {
             workExperienceDb.add(item.workExperienceToDO(userEmail));
         }
         workExperienceDb.disconnect();
     }
 
-    private void addUserToDb(User user) throws ClassNotFoundException, SQLException {
-        userDb = new UserDbConnect();
+    private void addUserToDb(User user, String databaseFileName) throws ClassNotFoundException, SQLException {
+        userDb = new UserDbConnect(databaseFileName);
         userDb.add(user.userToDO());
         userDb.disconnect();
     }
@@ -194,5 +194,9 @@ public class WebApiHandler {
         }
 
         return education;
+    }
+
+    public void setDatabaseFileName(String fileName) {
+        databaseFileName = fileName;
     }
 }

@@ -55,6 +55,25 @@ run_server_tests() {
   mvn test
 }
 
+build_server_docker_image() {
+  cd server
+  echo "------------------------------------------------------------"
+  echo "Building server docker image"
+  echo "------------------------------------------------------------"
+  cd ..
+  sudo docker build -t container .
+  echo "------------------------------------------------------------"
+}
+
+run_server_docker_image() {
+  cd server
+  echo "------------------------------------------------------------"
+  echo "Running server docker image"
+  echo "------------------------------------------------------------"
+  sudo docker run -it -p 8080:8080 container
+  echo "------------------------------------------------------------"
+}
+
 case $1 in
  "setup_client") setup_client;;
  "setup_server") setup_server;;
@@ -62,5 +81,7 @@ case $1 in
  "run_server") run_server;;
  "run_client_tests") run_client_tests;;
  "run_server_tests") run_server_tests;;
+ "build_server_docker_image") build_server_docker_image;;
+ "run_server_docker_image") run_server_docker_image;;
 esac
 

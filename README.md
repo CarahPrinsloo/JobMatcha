@@ -1,5 +1,7 @@
 # JobMatcha
 
+JobMatcha is an online job-matching networking mobile application. Users "swipe right" to like or "swipe left" to dislike other users' profiles, which include their photo, a short bio, and other relevant information. JobMatcha uses a "double opt-in" system where both users must match before they can exchange messages.
+
 JobMatcha consist of two programs: the server and the client. 
 
 The server program is responsible for managing the database of users. 

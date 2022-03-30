@@ -7,9 +7,7 @@ setup_client(){
   echo "------------------------------------------------------------"
   flutter clean
   flutter pub get
-  flutter build apk
   echo "-------------------------------------------------------------"
-  cp client-app/build/app/outputs/apk/release/app-release.apk .
 }
 
 setup_server(){
@@ -74,6 +72,17 @@ run_server_docker_image() {
   echo "------------------------------------------------------------"
 }
 
+package_client() {
+    cd client-app
+    echo "------------------------------------------------------------"
+    echo "Preparing the client for release"
+    echo "------------------------------------------------------------"
+    flutter clean
+    flutter pub get
+    flutter build apk
+    echo "-------------------------------------------------------------"
+}
+
 case $1 in
  "setup_client") setup_client;;
  "setup_server") setup_server;;
@@ -83,5 +92,6 @@ case $1 in
  "run_server_tests") run_server_tests;;
  "build_server_docker_image") build_server_docker_image;;
  "run_server_docker_image") run_server_docker_image;;
+ "package_client") package_client;;
 esac
 
